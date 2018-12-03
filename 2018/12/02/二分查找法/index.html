@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="陶健, 1099593012@qq.com" />
+  
+  
+  
+  <title>二分查找法 | tao jian</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据结构与算法之美,数据结构与算法之美," />
+  
+
+  
+
+  
+    <link rel="alternate" href="/atom.xml" title="tao jian" type="application/atom+xml">
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  
+
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">辰砂</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/">主页</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/">归档</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/">分类</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/">标签</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/">友链</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/">关于</a>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container">
+
+  
+<div>
+  <div class="post">
+    <h1 class="article-title">
+      <span>二分查找法</span>
+    </h1>
+    <div class="article-top-meta">
+      <span>
+        发布 : 
+        2018-12-02
+      </span>
+      <span>
+        分类 : 
+          
+            <a href="/categories/数据结构与算法之美/">
+              数据结构与算法之美
+            </a>
+          
+      </span>
+      <span>
+        浏览 : <span class="article-timer" data-identity="二分查找法"></span>
+      </span>
+    </div>
+    <div class="article-content">
+      <div class="markdown-body">
+        <h1 id="二分查找-折半查找"><a href="#二分查找-折半查找" class="headerlink" title="二分查找(折半查找)"></a>二分查找(折半查找)</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>二分查找也称折半查找（Binary Search），它是一种效率较高的查找方法。但是，折半查找要求线性表必须采用顺序存储结构，而且表中元素按关键字有序排列 （<strong>解释：所以二分查找的时候一定要是有序的数组</strong>）<br>、</p>
+<h2 id="二、过程"><a href="#二、过程" class="headerlink" title="二、过程"></a>二、过程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">若k==R[mid].key，查找成功若k&lt;R[mid].key，则high=mid-1若k&gt;R[mid].key，则low=mid+1</span><br></pre></td></tr></table></figure>
+<h3 id="1-查找-21"><a href="#1-查找-21" class="headerlink" title="1.查找 21"></a>1.查找 21</h3><img src="/2018/12/02/二分查找法/4.png">
+<h3 id="2-查找70"><a href="#2-查找70" class="headerlink" title="2.查找70"></a>2.查找70</h3><img src="/2018/12/02/二分查找法/5.png">
+<img src="/2018/12/02/二分查找法/6.png">
+<h2 id="三、算法描述"><a href="#三、算法描述" class="headerlink" title="三、算法描述"></a>三、算法描述</h2><h3 id="1-非递归"><a href="#1-非递归" class="headerlink" title="1.非递归"></a>1.非递归</h3><p>设表长为n，low、high和mid分别指向待查元素所在区间的上界、下界和中点,k为给定值</p>
+<p>初始时，令low=1,high=n,mid=(low+high)/2 </p>
+<p>让k与mid指向的记录比较</p>
+<p>若k==R[mid].key，查找成功</p>
+<p>若k&lt;R[mid].key，则high=mid-1</p>
+<p>若k&gt;R[mid].key，则low=mid+1</p>
+<p>重复上述操作，直至low&gt;high时，查找失败</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Search_Bin</span><span class="params">(SSTable ST,KeyType key)</span></span>&#123;<span class="comment">//若找到，则函数值为该元素在表中的位置，否则为0</span>    low=<span class="number">1</span>;high=ST.length;						 <span class="keyword">while</span>(low&lt;=high)&#123;        mid=(low+high)/<span class="number">2</span>;        <span class="keyword">if</span>(key==ST.R[mid].key) <span class="keyword">return</span> mid;         <span class="keyword">else</span> <span class="keyword">if</span>(key&lt;ST.R[mid].key) high=mid<span class="number">-1</span>;<span class="comment">//前一子表查找</span>        <span class="keyword">else</span> low=mid+<span class="number">1</span>;                       		<span class="comment">//后一子表查找</span>    &#125;									    <span class="keyword">return</span> <span class="number">0</span>;		<span class="comment">//表中不存在待查元素</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-递归"><a href="#2-递归" class="headerlink" title="2.递归"></a>2.递归</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Search_Bin</span> <span class="params">(SSTable ST, keyType key, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;   <span class="keyword">if</span>(low&gt;high) <span class="keyword">return</span> <span class="number">0</span>;   <span class="comment">//查找不到时返回0 </span>  mid=(low+high)/<span class="number">2</span>;   <span class="keyword">if</span>(key==ST.elem[mid].key)  <span class="keyword">return</span> mid;   <span class="keyword">else</span> <span class="keyword">if</span>(key&lt;ST.elem[mid].key)      <span class="keyword">return</span> search_Bin(ST,key,low,mid<span class="number">-1</span>);<span class="comment">//递归</span>  <span class="keyword">else</span>  <span class="keyword">return</span> search_Bin(ST,key,mid+<span class="number">1</span>,high); <span class="comment">//递归</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3、完整代码"><a href="#3、完整代码" class="headerlink" title="3、完整代码"></a>3、完整代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BinarySearch</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span>[] nums = &#123;<span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">9</span>&#125;;</span><br><span class="line">        System.out.println(binarySearch(nums, <span class="number">1</span>));</span><br><span class="line">        System.out.println(binarySearchRecursion(nums, <span class="number">1</span>, <span class="number">0</span>, nums.length - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 循环</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nums</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (nums.length &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> right = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (left &lt;= right) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (left - right) / <span class="number">2</span> + right;</span><br><span class="line">            <span class="keyword">if</span> (target == nums[mid]) &#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 递归</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nums</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> left</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> right</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">binarySearchRecursion</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (nums.length &lt; <span class="number">0</span> || left &lt; <span class="number">0</span> || right &gt; nums.length - <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> mid = (left - right) / <span class="number">2</span> + right;</span><br><span class="line">        <span class="keyword">if</span> (left &lt;= right) &#123;</span><br><span class="line">            <span class="keyword">if</span> (target == nums[mid]) &#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">                <span class="keyword">return</span> binarySearchRecursion(nums, target, mid + <span class="number">1</span>, right);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> binarySearchRecursion(nums, target, left, mid - <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、折半查找的性能分析"><a href="#四、折半查找的性能分析" class="headerlink" title="四、折半查找的性能分析"></a>四、折半查找的性能分析</h2><p>判定树：树中每个结点表示表中一个记录，结点中的值为该记录在表中的位置，通常称这个查找过程的二叉树称为判定树。折半查找法在成功时进行比较的关键字个数最多不超过树的深度。（折半查找的运行过程可以用二叉树来描述，这棵树通常称为“判定树”）</p>
+<p>关键字的平均比较次数，也称平均搜索长度ASL(Average Search Length)</p>
+<img src="/2018/12/02/二分查找法/7.png">
+<p>如上图而言是11个节点</p>
+<img src="/2018/12/02/二分查找法/8.png">
+<p>假设概率都相等的情况下：ASL＝1/11<em>(1</em>1＋2×2＋4×3+4*4 )＝33/11=3<br>查找成功时比较次数：为该结点在判定树上的层次数，不超过树的深度  d =  log2 n   + 1<br>查找不成功的过程就是走了一条从根结点到外部结点的路径d或d-1。<br>查找过程：每次将待查记录所在区间缩小一半，比顺序查找效率高,时间复杂度O(log2 n)</p>
+<p>适用条件：采用顺序存储结构的有序表，不宜用于链式结构</p>
+<h2 id="五、优化"><a href="#五、优化" class="headerlink" title="五、优化"></a>五、优化</h2><p>由上面可以知道二分法的代码的核心</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mid=(low+high)/<span class="number">2</span>;<span class="keyword">if</span>(key==ST.R[mid].key) <span class="keyword">return</span> mid;  <span class="keyword">else</span> <span class="keyword">if</span>(key&lt;ST.R[mid].key) high=mid<span class="number">-1</span>;<span class="comment">//前一子表查找</span>  <span class="keyword">else</span> low=mid+<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>思考：极端情况下会不会产生数组溢出，答案是肯定的，因为极端情况下，当high为int类型的临界最大值的时候，low只要变化，两者相加肯定会溢出。为了效率更高，我们也可以用位运算，</p>
+<p>改进代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int mid = (left - right) &gt;&gt; 2 + right;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="六、二分法练习"><a href="#六、二分法练习" class="headerlink" title="六、二分法练习"></a>六、二分法练习</h2><p><a href="https://leetcode.com/problemset/all/?topicSlugs=binary-search" target="_blank" rel="noopener">https://leetcode.com/problemset/all/?topicSlugs=binary-search</a></p>
+<p>参考</p>
+<p><a href="https://www.cnblogs.com/ciyeer/p/9065781.html" target="_blank" rel="noopener">https://www.cnblogs.com/ciyeer/p/9065781.html</a></p>
+      </div>
+    </div>
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        <p>本文作者：陶健<br>
+        本文链接： <a href="">https://tojian.github.io/2018/12/02/二分查找法/</a><br>
+        版权声明： 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</p>
+        </blockquote>
+      </div>
+    </div>
+    <div class="article-footer">
+      <div class="article-meta pull-left">
+        <span>
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+            
+            <span class="span--tag">
+              <a href="/tags/数据结构与算法之美/">
+                #数据结构与算法之美
+              </a>
+            </span>
+            
+          
+        </span>
+      </div>
+      <div class="article-meta pull-right">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(generateToc, 1000);
+</script>
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2018/10/20/ArrayList/" target="_self">java集合之ArrayList</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2018/12/02/链表算法经典十题总结/" target="_self">链表算法经典十题总结</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  <a href="#comment" class="comment-anchor"></a>
+  <div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+  <div id="vcomments"></div>
+
+  <script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "",
+      appKey: "",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+
+  <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("", "");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    timerDOMCache[identity] = {
+      dom: timerDOM,
+      times: undefined
+    };
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.innerText = times;
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.innerText = 1;
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+
+</div>
+
+
+      <script>
+  let isMathjaxConfig = false; // 防止重复调用Config，造成性能损耗
+
+  const initMathjaxConfig = () => {
+    if (!window.MathJax) {
+      return;
+    }
+    window.MathJax.Hub.Config({
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    });
+    isMathjaxConfig = true; // 
+  };
+  if (isMathjaxConfig === false) { // 如果：没有配置MathJax
+    initMathjaxConfig();
+  }
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
+  
+</script>
+<footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+  </p>
+</footer>
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 10, 14, 23, 58).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+      <aside id="sidebar">
+        <p id="sidebar-header"></p>
+        <ol id="sidebar-toc"></ol>
+      </aside>
+
+    </div>
+  </body>
+
+</html>

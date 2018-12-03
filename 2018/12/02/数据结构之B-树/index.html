@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="陶健, 1099593012@qq.com" />
+  
+  
+  
+  <title>数据结构之B+树 | tao jian</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据结构与算法之美," />
+  
+
+  
+
+  
+    <link rel="alternate" href="/atom.xml" title="tao jian" type="application/atom+xml">
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  
+
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">辰砂</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/">主页</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/">归档</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/">分类</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/">标签</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/">友链</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/">关于</a>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container">
+
+  
+<div>
+  <div class="post">
+    <h1 class="article-title">
+      <span>数据结构之B+树</span>
+    </h1>
+    <div class="article-top-meta">
+      <span>
+        发布 : 
+        2018-12-02
+      </span>
+      <span>
+        分类 : 
+          
+            <a href="/categories/数据结构与算法之美/">
+              数据结构与算法之美
+            </a>
+          
+      </span>
+      <span>
+        浏览 : <span class="article-timer" data-identity="数据结构之B-树"></span>
+      </span>
+    </div>
+    <div class="article-content">
+      <div class="markdown-body">
+        <h2 id="一、-浅谈B-树索引"><a href="#一、-浅谈B-树索引" class="headerlink" title="一、 浅谈B-树索引"></a>一、 浅谈B-树索引</h2><h3 id="1-B-树的特性"><a href="#1-B-树的特性" class="headerlink" title="1.B-树的特性"></a>1.B-树的特性</h3><p>一棵m阶B-树，或者是空树，或者是满足以下性质的m叉树</p>
+<blockquote>
+<p>根结点至少有两个分支；<br>除根以外的非叶结点，每个结点包含分支数范围[[m/2],m]，即关键字字数的范围是[[m/2]-1,m-1]，其中[m/2]表示取大于等于m/2的最小整数<br>所有叶子结点都在树的同一层上，并且指针域为空；<br>所有的非终端结点应包含如下信息： (n，A0，K1，A1，K2，A2，… ，Kn，An)，结点内关键字互不相等，且从小到大排列。</p>
+</blockquote>
+<p><strong>解释：</strong><br>m阶的意思是这颗树最多的分支是多少，每个节点可以包含很多关键字，范围是[[m/2]-1,m-1]，比如m为 3，就说明是3阶的B-树，<br>那么它的树的节点的关键字最少2，最多4个。下面的B+树也是同样的理解。</p>
+<h3 id="2-B-树索引结构图"><a href="#2-B-树索引结构图" class="headerlink" title="2.B-树索引结构图"></a>2.B-树索引结构图</h3><img src="/2018/12/02/数据结构之B-树/1.jpg">
+<h3 id="3-B-树查找代价分析"><a href="#3-B-树查找代价分析" class="headerlink" title="3.B-树查找代价分析"></a>3.B-树查找代价分析</h3><p>设关键字的总数为 N ，求 m阶 B- 树的最大层次 L。</p>
+<img src="/2018/12/02/数据结构之B-树/2.jpg">
+<blockquote>
+<p>图中有一点问题</p>
+</blockquote>
+<h2 id="二、-B-树的索引结构"><a href="#二、-B-树的索引结构" class="headerlink" title="二、 B+树的索引结构"></a>二、 B+树的索引结构</h2><h3 id="1-B-树特性"><a href="#1-B-树特性" class="headerlink" title="1.B+树特性"></a>1.B+树特性</h3><p>在实际的文件系统中，基本上不使用B_树，而是使用B_树的一种变体，称为m阶B+树。 它与B-树的主要不同是叶子结点中存储记录。在B+树中，所有的非叶子结点可以看成是索引，而其中的关键字是作为“分界关键<br>字”，用来界定某一关键字的记录所在的子树。一棵m阶B+树与m阶B-树的主要差异是：  </p>
+<blockquote>
+<p>1.若一个结点有n棵子树，则必含有n个关键字；</p><br>2.所有叶子结点中包含了全部记录的关键字信息以及这些关键字记录的指针，而且叶子结点按关键字的大小从小到大顺序链接；<p></p><br>3.所有的非叶子结点可以看成是索引的部分，结点中只含有其子树的根结点中的最大(或最小)关键字。<p></p><p></p>
+</blockquote>
+<h3 id="2-B-树索引结构图-1"><a href="#2-B-树索引结构图-1" class="headerlink" title="2.B+树索引结构图"></a>2.B+树索引结构图</h3><img src="/2018/12/02/数据结构之B-树/3.jpg">
+<h2 id="三、-B-树的索引操作"><a href="#三、-B-树的索引操作" class="headerlink" title="三、 B+树的索引操作"></a>三、 B+树的索引操作</h2><h3 id="1-B-树查找"><a href="#1-B-树查找" class="headerlink" title="1.B+树查找"></a>1.B+树查找</h3><p>对B+树可以进行两种查找运算：</p>
+<ol>
+<li>从最小关键字开始，进行顺序查找。</li>
+<li>从根结点开始，进行随机查找</li>
+</ol>
+<p>在查找时，若非终端结点上的关键值等于给定值，并不终止，而是继续向下直到叶子结点。因此，在B+树中，不管查找成功与否，每次查找都是走了一条从根到叶子结点的路径。其余同B-树的查找类似。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">// 在树中查找数据</span><br><span class="line">bool BPlusTree::Search(KEY_TYPE data, char* sPath)</span><br><span class="line">&#123;</span><br><span class="line">    int i = 0;</span><br><span class="line">    int offset = 0;</span><br><span class="line">    if (NULL != sPath)</span><br><span class="line">    &#123;</span><br><span class="line">        (void)sprintf(sPath+offset, &quot;The serach path is:&quot;);</span><br><span class="line">        offset+=19;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CNode * pNode = GetRoot();</span><br><span class="line">    // 循环查找对应的叶子结点</span><br><span class="line">  while (NULL != pNode)</span><br><span class="line">    &#123;         </span><br><span class="line">        // 结点为叶子结点，循环结束</span><br><span class="line">        if (NODE_TYPE_LEAF == pNode-&gt;GetType())</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // 找到第一个键值大于等于key的位置</span><br><span class="line">        for (i = 1; (data &gt;= pNode-&gt;GetElement(i) )&amp;&amp; (i &lt;= pNode-&gt;GetCount()); i++)</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (NULL != sPath)</span><br><span class="line">        &#123;</span><br><span class="line">            (void)sprintf(sPath+offset, &quot; %3d --&gt;&quot;, pNode-&gt;GetElement(1));</span><br><span class="line">            offset+=8;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        pNode = pNode-&gt;GetPointer(i);</span><br><span class="line">    &#125;</span><br><span class="line">      // 没找到</span><br><span class="line">    if (NULL == pNode)</span><br><span class="line">    &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">if (NULL != sPath)</span><br><span class="line">    &#123;</span><br><span class="line">        (void)sprintf(sPath+offset, &quot;%3d&quot;, pNode-&gt;GetElement(1));</span><br><span class="line">        offset+=3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 在叶子结点中继续找</span><br><span class="line">    bool found = false;</span><br><span class="line">    for (i = 1; (i &lt;= pNode-&gt;GetCount()); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if (data == pNode-&gt;GetElement(i))</span><br><span class="line">        &#123;</span><br><span class="line">            found = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">if (NULL != sPath)</span><br><span class="line">    &#123;</span><br><span class="line">        if (true == found)</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            (void)sprintf(sPath+offset, &quot; ,successed.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            (void)sprintf(sPath+offset, &quot; ,failed.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return found;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-B-树查找代价分析"><a href="#2-B-树查找代价分析" class="headerlink" title="2.B+树查找代价分析"></a>2.B+树查找代价分析</h3><img src="/2018/12/02/数据结构之B-树/4.jpg">
+<h3 id="3-B-树插入"><a href="#3-B-树插入" class="headerlink" title="3.B+树插入"></a>3.B+树插入</h3><p>m阶B树的插入操作在叶子结点上进行，假设要插入关键值a，找到叶子结点后插入a，做如下算法判别：</p>
+<p>1、如果当前结点是根结点并且插入后结点关键字数目小于等于m，则算法结束；</p>
+<p>2、如果当前结点是非根结点并且插入后结点关键字数目小于等于m，则判断若a是新索引值时转步骤④后结束，若a不是新索引值则直接结束；</p>
+<p>3、如果插入后关键字数目大于m(阶数)，则结点先分裂成两个结点X和Y，并且他们各自所含的  关键字个数分别为：u=大于(m+1)/2的最小整数，v=小于(m+1)/2的最大整数；由于索引值位于结点的最左端或者最右端，不妨假设索引值位于结点最右端，有如下操作：<br>    a)如果当前分裂成的X和Y结点原来所属的结点是根结点，则从X和Y中取出索引的关键字，将这两个关键字组成新的根结点，并且这个根结点指向X和Y，算法结束；<br>    b)如果当前分裂成的X和Y结点原来所属的结点是非根结点，依据假设条件判断，如果a成为Y的新索引值，则转步骤④得到Y的双亲结点P，如果a不是Y结点的新索引值，则求出X和Y结点的双亲结点P；然后提取X结点中的新索引值a’，在P中插入关键字a’，从P开始，继续进行插入算法；</p>
+<p>4、提取结点原来的索引值b，自顶向下，先判断根是否含有b，是则需要先将b替换为a，然后从根结点开始，记录结点地址P，判断P的孩子是否含有索引值b而不含有索引值a，是则先将孩子结点中的b替换为a，然后将P的孩子的地址赋值给P，继续搜索，直到发现P的孩子中已经含有a值时，停止搜索，返回地址P。</p>
+<h3 id="4-B-树的插入过程"><a href="#4-B-树的插入过程" class="headerlink" title="4.B+树的插入过程"></a>4.B+树的插入过程</h3><img src="/2018/12/02/数据结构之B-树/5.jpg">
+<img src="/2018/12/02/数据结构之B-树/6.jpg">
+<img src="/2018/12/02/数据结构之B-树/7.jpg">
+<img src="/2018/12/02/数据结构之B-树/8.png">
+<img src="/2018/12/02/数据结构之B-树/9.png">
+<img src="/2018/12/02/数据结构之B-树/10.png">
+<img src="/2018/12/02/数据结构之B-树/11.png">
+<img src="/2018/12/02/数据结构之B-树/12.png">
+<img src="/2018/12/02/数据结构之B-树/13.png">
+<img src="/2018/12/02/数据结构之B-树/14.png">
+<h3 id="5-B-树的删除操作"><a href="#5-B-树的删除操作" class="headerlink" title="5.B+树的删除操作"></a>5.B+树的删除操作</h3><p>B+树的删除仅在叶结点上进行。</p>
+<p>当叶子结点中的最大关键字被删除时，其在非终端结点中的值可以作为一个“分界关键字”存在。若因删除而使结点中关键字的个数少于m/2 （m/2结果取上界，如5/2结果为3）时，其和兄弟结点的合并过程亦和B-树类似。</p>
+<h3 id="6-B-树的删除过程"><a href="#6-B-树的删除过程" class="headerlink" title="6.B+树的删除过程"></a>6.B+树的删除过程</h3><img src="/2018/12/02/数据结构之B-树/15.png">
+<img src="/2018/12/02/数据结构之B-树/16.png">
+<img src="/2018/12/02/数据结构之B-树/17.png">
+<img src="/2018/12/02/数据结构之B-树/18.png">
+<img src="/2018/12/02/数据结构之B-树/19.png">
+<img src="/2018/12/02/数据结构之B-树/20.png">
+<img src="/2018/12/02/数据结构之B-树/21.png">
+<img src="/2018/12/02/数据结构之B-树/22.png">
+<img src="/2018/12/02/数据结构之B-树/23.png">
+<img src="/2018/12/02/数据结构之B-树/24.png">
+<img src="/2018/12/02/数据结构之B-树/25.png">
+<img src="/2018/12/02/数据结构之B-树/26.png">
+<img src="/2018/12/02/数据结构之B-树/27.png">
+<h2 id="四、-B-树的优分析"><a href="#四、-B-树的优分析" class="headerlink" title="四、 B+树的优分析"></a>四、 B+树的优分析</h2><h3 id="1-为什么选择B-树？"><a href="#1-为什么选择B-树？" class="headerlink" title="1.为什么选择B+树？"></a>1.为什么选择B+树？</h3><p>1、B+树的磁盘读写代价更低</p>
+<p>我们都知道磁盘时可以块存储的，也就是同一个磁道上同一盘块中的所有数据都可以一次全部读取。而B+树的内部结点并没有指向关键字具体信息的指针 。因此其内部结点相对B_树更小。如果把所有同一内部结点的关键字存放在同一盘块中，那么盘块所能容纳的关键字数量也越多。这样，一次性读入内存中的需要查找的关键字也就越多。相对来说IO读写次数也就降低了。</p>
+<p>2、B+树的查询效率更加稳定。</p>
+<p>由于非终结点并不是最终指向文件内容的结点，而只是叶子结点中关键字的索引。所以任何关键字的查找必须走一条从根结点到叶子结点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当。</p>
+      </div>
+    </div>
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        <p>本文作者：陶健<br>
+        本文链接： <a href="">https://tojian.github.io/2018/12/02/数据结构之B-树/</a><br>
+        版权声明： 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</p>
+        </blockquote>
+      </div>
+    </div>
+    <div class="article-footer">
+      <div class="article-meta pull-left">
+        <span>
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+        </span>
+      </div>
+      <div class="article-meta pull-right">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(generateToc, 1000);
+</script>
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2018/12/02/必须了解的经典排序算法整理/" target="_self">必须了解的经典排序算法整理</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2018/12/02/数据结构绪论/" target="_self">数据结构绪论</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  <a href="#comment" class="comment-anchor"></a>
+  <div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+  <div id="vcomments"></div>
+
+  <script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "",
+      appKey: "",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+
+  <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("", "");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    timerDOMCache[identity] = {
+      dom: timerDOM,
+      times: undefined
+    };
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.innerText = times;
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.innerText = 1;
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+
+</div>
+
+
+      <script>
+  let isMathjaxConfig = false; // 防止重复调用Config，造成性能损耗
+
+  const initMathjaxConfig = () => {
+    if (!window.MathJax) {
+      return;
+    }
+    window.MathJax.Hub.Config({
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    });
+    isMathjaxConfig = true; // 
+  };
+  if (isMathjaxConfig === false) { // 如果：没有配置MathJax
+    initMathjaxConfig();
+  }
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
+  
+</script>
+<footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+  </p>
+</footer>
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 10, 14, 23, 58).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+      <aside id="sidebar">
+        <p id="sidebar-header"></p>
+        <ol id="sidebar-toc"></ol>
+      </aside>
+
+    </div>
+  </body>
+
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="陶健, 1099593012@qq.com" />
+  
+  
+  
+  <title>循序渐进学习栈和队列 | tao jian</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据结构与算法之美," />
+  
+
+  
+
+  
+    <link rel="alternate" href="/atom.xml" title="tao jian" type="application/atom+xml">
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  
+
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">辰砂</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/">主页</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/">归档</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/">分类</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/">标签</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/">友链</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/">关于</a>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container">
+
+  
+<div>
+  <div class="post">
+    <h1 class="article-title">
+      <span>循序渐进学习栈和队列</span>
+    </h1>
+    <div class="article-top-meta">
+      <span>
+        发布 : 
+        2018-12-02
+      </span>
+      <span>
+        分类 : 
+          
+            <a href="/categories/数据结构与算法之美/">
+              数据结构与算法之美
+            </a>
+          
+      </span>
+      <span>
+        浏览 : <span class="article-timer" data-identity="循序渐进学习栈和队列"></span>
+      </span>
+    </div>
+    <div class="article-content">
+      <div class="markdown-body">
+        <h1 id="一、栈"><a href="#一、栈" class="headerlink" title="一、栈"></a>一、栈</h1><h2 id="1-栈的定义："><a href="#1-栈的定义：" class="headerlink" title="1.栈的定义："></a>1.栈的定义：</h2><p>是限定仅在表尾进行插入或删除操作的线性表。因此，对栈来说，表尾端有其特殊含义称为栈顶，相应地，表头端称为栈底。栈的修改是按后进先出的原则进行的，因此又称后进先出表。</p>
+<img src="/2018/12/02/循序渐进学习栈和队列/1.png">
+<blockquote>
+<p>解释：栈是一个很简单的数据结构，但是好多人不能理解它的重要的特性，即只能在栈顶的位置进行操作，可以理解栈是一个水杯，只能在杯口倒水或者喝水。</p>
+</blockquote>
+<h2 id="2-栈的定义和特点："><a href="#2-栈的定义和特点：" class="headerlink" title="2.栈的定义和特点："></a>2.栈的定义和特点：</h2><p><strong>1.定义：</strong>只能在<strong>表的一端（栈顶）进行插入和删除</strong>运算的线性表</p>
+<p><strong>2.逻辑结构</strong>：与线性表相同，仍为一对一关系</p>
+<p><strong>3.存储结构</strong>：用顺序栈或链栈存储均可，但以顺序栈更常见（本文探讨顺序栈）</p>
+<p><strong>4.运算规则：</strong>只能在栈顶运算，且访问结点时依照<strong>后进先出（LIFO）</strong>或<strong>先进后出（FILO）</strong>的原则</p>
+<p><strong>5.实现方式：</strong>关键是编写入栈和出栈函数，具体实现依顺序栈或链栈的不同而不同。</p>
+<h2 id="3-顺序栈的基本操作"><a href="#3-顺序栈的基本操作" class="headerlink" title="3.顺序栈的基本操作"></a>3.顺序栈的基本操作</h2><h3 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a>1.初始化</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">   <span class="keyword">int</span> data[maxsize];</span><br><span class="line">   <span class="keyword">int</span> top;</span><br><span class="line">&#125;Sqstack;  <span class="comment">// 顺序栈类型定义</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Sqstack &amp;st)</span></span>&#123;</span><br><span class="line">  st.top = <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-判断栈空"><a href="#2-判断栈空" class="headerlink" title="2.判断栈空"></a>2.判断栈空</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isEmpty</span><span class="params">(Sqstack st)</span></span>&#123;</span><br><span class="line"> <span class="keyword">if</span> (st.top == <span class="number">-1</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">else</span> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-进栈"><a href="#3-进栈" class="headerlink" title="3.进栈"></a>3.进栈</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Sqstack &amp;st ,<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line"><span class="comment">// 栈满，不能进栈</span></span><br><span class="line">  <span class="keyword">if</span> (st.top == maxSize - <span class="number">1</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 先移动指针，再进栈</span></span><br><span class="line">  ++ (st.top);</span><br><span class="line">  st.data[st.top] = x;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-出栈"><a href="#4-出栈" class="headerlink" title="4.出栈"></a>4.出栈</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span> <span class="params">(Sqstack &amp;st, <span class="keyword">int</span> &amp;x)</span></span>&#123;</span><br><span class="line"> <span class="comment">// 空栈，不能出栈</span></span><br><span class="line">  <span class="keyword">if</span> (st.top == <span class="number">-1</span>)</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 先取出元素，再移动指针</span></span><br><span class="line">  x = data[st.top];</span><br><span class="line">  -- st.top;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="三、队列"><a href="#三、队列" class="headerlink" title="三、队列"></a>三、队列</h1><h2 id="1-队列的定义："><a href="#1-队列的定义：" class="headerlink" title="1.队列的定义："></a>1.队列的定义：</h2><p>是一种先进先出的线性表，它只允许在表的一端进行插入，而在另一端删除元素，在队列中，允许插入的一端称做队尾，允许删除的一端称做队头。</p>
+<img src="/2018/12/02/循序渐进学习栈和队列/2.png">
+<blockquote>
+<p>解释：队列是一个很简单的数据结构，从队尾插入，队头删除，可以理解队列是一个单行道，如图可知。</p>
+</blockquote>
+<h2 id="2-队列的定义和特点："><a href="#2-队列的定义和特点：" class="headerlink" title="2.队列的定义和特点："></a>2.队列的定义和特点：</h2><p><strong>1.定义：</strong>只能在表的一端（队尾）进行插入，在另一端（队头）进行删除运算的线性表</p>
+<p><strong>2.逻辑结构：</strong>与线性表相同，仍为一对一关系</p>
+<p><strong>3.存储结构</strong>：用顺序队列或链队存储均可</p>
+<p><strong>4.运算规则：</strong>先进先出（FIFO） </p>
+<p><strong>5.实现方式：</strong>关键是编写入队和出队函数，具体实现依顺序队或链队的不同而不同</p>
+<h2 id="3-队列的基本操作"><a href="#3-队列的基本操作" class="headerlink" title="3.队列的基本操作"></a>3.队列的基本操作</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M  100   <span class="comment">//最大队列长度</span></span>Typedef <span class="class"><span class="keyword">struct</span> &#123;</span>   QElemType *base;  <span class="comment">//初始化的动态分配存储空间</span>   <span class="keyword">int</span>  front;            <span class="comment">//头指针   </span>   <span class="keyword">int</span>  rear;             <span class="comment">//尾指针</span>&#125;SqQueue;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">空队标志：front= =rear入队：base[rear++]=x;出队：x=base[front++];</span><br></pre></td></tr></table></figure>
+<h2 id="4-循环队列"><a href="#4-循环队列" class="headerlink" title="4.循环队列"></a>4.循环队列</h2><p>介绍循环队列之前首先来看看一种现象：</p>
+<img src="/2018/12/02/循序渐进学习栈和队列/3.png">
+<p>这种现象也是队列的弊端，发生假溢出现象。如果解决—–循环队列</p>
+<img src="/2018/12/02/循序渐进学习栈和队列/4.png">
+<p>如上图可以知道，循环队列的入队和出队的条件一样。没办法区分。</p>
+<blockquote>
+<p>解决方案：<br>1.另外设一个标志以区别队空、队满<br>2.少用一个元素空间：<br>队空：front == rear；<br>队满：(rear+1)%M == front</p>
+</blockquote>
+<h2 id="5-循环队列的基本操作"><a href="#5-循环队列的基本操作" class="headerlink" title="5.循环队列的基本操作"></a>5.循环队列的基本操作</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXQSIZE  100  <span class="comment">//最大长度</span></span>Typedef <span class="class"><span class="keyword">struct</span> &#123;</span>   QElemType *base;  <span class="comment">//初始化的动态分配存储空间</span>   <span class="keyword">int</span>  front;            <span class="comment">//头指针   </span>   <span class="keyword">int</span>  rear;             <span class="comment">//尾指针</span>&#125;SqQueue;</span><br></pre></td></tr></table></figure>
+<h3 id="1-循环队列初始化："><a href="#1-循环队列初始化：" class="headerlink" title="1.循环队列初始化："></a>1.循环队列初始化：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">InitQueue</span> <span class="params">(SqQueue &amp;Q)</span></span>&#123;    Q.base =<span class="keyword">new</span> QElemType[MAXQSIZE]    <span class="keyword">if</span>(!Q.base) <span class="built_in">exit</span>(OVERFLOW);    Q.front=Q.rear=<span class="number">0</span>;    <span class="keyword">return</span> OK;&#125;```### <span class="number">2.</span>求循环队列长度：</span><br><span class="line">```c</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">QueueLength</span> <span class="params">(SqQueue Q)</span></span>&#123;    <span class="keyword">return</span> (Q.rear-Q.front+MAXQSIZE)%MAXQSIZE;                              &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-循环队列入队："><a href="#3-循环队列入队：" class="headerlink" title="3.循环队列入队："></a>3.循环队列入队：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q,QElemType e)</span></span>&#123;    <span class="keyword">if</span>((Q.rear+<span class="number">1</span>)%MAXQSIZE==Q.front)  <span class="keyword">return</span> ERROR;    Q.base[Q.rear]=e;    Q.rear=(Q.rear+<span class="number">1</span>)%MAXQSIZE;     <span class="keyword">return</span> OK;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-循环队列出队："><a href="#4-循环队列出队：" class="headerlink" title="4.循环队列出队："></a>4.循环队列出队：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">DeQueue</span> <span class="params">(LinkQueue &amp;Q,QElemType &amp;e)</span></span>&#123;   <span class="keyword">if</span>(Q.front==Q.rear) <span class="keyword">return</span> ERROR;   e=Q.base[Q.front];   Q.front=(Q.front+<span class="number">1</span>)%MAXQSIZE;   <span class="keyword">return</span> OK;&#125;</span><br></pre></td></tr></table></figure>
+      </div>
+    </div>
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        <p>本文作者：陶健<br>
+        本文链接： <a href="">https://tojian.github.io/2018/12/02/循序渐进学习栈和队列/</a><br>
+        版权声明： 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</p>
+        </blockquote>
+      </div>
+    </div>
+    <div class="article-footer">
+      <div class="article-meta pull-left">
+        <span>
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+        </span>
+      </div>
+      <div class="article-meta pull-right">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(generateToc, 1000);
+</script>
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2018/12/02/链表算法经典十题总结/" target="_self">链表算法经典十题总结</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2018/12/02/数据结构之线性表/" target="_self">数据结构之线性表</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  <a href="#comment" class="comment-anchor"></a>
+  <div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+  <div id="vcomments"></div>
+
+  <script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "",
+      appKey: "",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+
+  <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("", "");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    timerDOMCache[identity] = {
+      dom: timerDOM,
+      times: undefined
+    };
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.innerText = times;
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.innerText = 1;
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+
+</div>
+
+
+      <script>
+  let isMathjaxConfig = false; // 防止重复调用Config，造成性能损耗
+
+  const initMathjaxConfig = () => {
+    if (!window.MathJax) {
+      return;
+    }
+    window.MathJax.Hub.Config({
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    });
+    isMathjaxConfig = true; // 
+  };
+  if (isMathjaxConfig === false) { // 如果：没有配置MathJax
+    initMathjaxConfig();
+  }
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
+  
+</script>
+<footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+  </p>
+</footer>
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 10, 14, 23, 58).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+      <aside id="sidebar">
+        <p id="sidebar-header"></p>
+        <ol id="sidebar-toc"></ol>
+      </aside>
+
+    </div>
+  </body>
+
+</html>

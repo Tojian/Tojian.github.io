@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="陶健, 1099593012@qq.com" />
+  
+  
+  
+  <title>数据结构之时间复杂度 | tao jian</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Hexo, BMW" />
+  
+
+  
+
+  
+    <link rel="alternate" href="/atom.xml" title="tao jian" type="application/atom+xml">
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  
+
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">辰砂</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/">主页</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/">归档</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/">分类</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/">标签</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/">友链</a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/">关于</a>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container">
+
+  
+<div>
+  <div class="post">
+    <h1 class="article-title">
+      <span>数据结构之时间复杂度</span>
+    </h1>
+    <div class="article-top-meta">
+      <span>
+        发布 : 
+        2018-12-02
+      </span>
+      <span>
+        分类 : 
+          
+      </span>
+      <span>
+        浏览 : <span class="article-timer" data-identity="数据结构之时间复杂度"></span>
+      </span>
+    </div>
+    <div class="article-content">
+      <div class="markdown-body">
+        <h1 id="一、浅谈算法"><a href="#一、浅谈算法" class="headerlink" title="一、浅谈算法"></a>一、浅谈算法</h1><p>   学习软件开发这么多年，常常听到程序=数据结构+算法，但是很多人对这句话提出质疑，因为实际项目开发的时候大部分人是做螺丝钉的角色，而且大部分甘于做螺丝钉的角色，就会认为实际项目，只是完成业务开发而已，去哪都是增删改查，数据结构根本用不到。我认为，算法和基本的数据结构是非常重要的，对于一个合格的程序猿来说，有时候我们没有涉及到，只是别人把需要的事情都给我们做了，比如的java版本的hashmap，采用红黑树的结构，提高了更多效率，软件开发高速发展的同时，编程的门槛也会越来越低，只有了解了最本质的才会不被技术淘汰。</p>
+<p>算法的五大特性：</p>
+<blockquote>
+<p>1.有穷性：不是数学，算法比较合理，每一步在规定时间内进行</p>
+<p>2.确定性：每一条指令都有一个明确的含义</p>
+<p>3.可行性：算法可以执行</p>
+<p>4.输入0或者多个</p>
+<p>5.输出 只有一个</p>
+</blockquote>
+<p>算法设计的四大要求：</p>
+<blockquote>
+<p>1.正确性</p>
+<p>2.可读性</p>
+<p>3.健壮性：容错能力，输入数据非法的时候，不会产生的输出结果</p>
+<p>边界问题 （数组的长度的判断，非法字段，树Root是否为空）</p>
+<p>4.效率和存储</p>
+</blockquote>
+<p>***注：1.研究算法的复杂度，侧重的是研究算法随着输入规模扩大增长量的一个抽象，而不是精确定位执行多少次</p>
+<pre><code>2. 不关心编译语言，不关心机器***
+</code></pre><p>所以我们应该用什么方式进行算法的度量方式呢？接下来我们聊聊时间复杂度</p>
+<h1 id="二、时间复杂度"><a href="#二、时间复杂度" class="headerlink" title="二、时间复杂度"></a>二、时间复杂度</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p>我们知道程序的效率可以称之为程序的时间复杂度，通俗点说就是算法执行的时间，所以将算法中基本操作的执行次数作为算法时间复杂度的度量。</p>
+<p><strong>比如：如何求1+2+….. n的结果</strong></p>
+<p>第一种：O（n）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=n;i++)&#123;</span><br><span class="line">	  sum=sum+i;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>第二种：O(1)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">   sum =(<span class="number">1</span>+n)*n/<span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<p>上述的例子可以说明如果不同的策略对待同一个需求而已，时间复杂度是不一样的，算法的优化，时间复杂度越低也是算法优化的目的之一。</p>
+<p><strong>时间复杂度：</strong>算法中基本语句重复执行的次数是问题规模n的某个函数f(n),算法的时间量度记作：$T(n)=O(f(n))$表示随着n的增大，算法执行的时间的增长率和f(n)的增长率相同，称渐近时间复杂度。</p>
+<p><strong>函数的渐进增长：</strong>给定两个函数，f(n).g(n)，如果存在一个整数N，使得对于所有的n&gt;N,f(n)总是比g(n)大，那么我们说f(n)的增长渐进快于g(n)</p>
+<p>上面讨论的时间复杂度是官方解释，仔细可以看时间复杂度可以表示渐进函数的抽象形式即可。</p>
+<h2 id="2-时间复杂度的记法："><a href="#2-时间复杂度的记法：" class="headerlink" title="2.时间复杂度的记法："></a>2.时间复杂度的记法：</h2><h3 id="1-大O记号-（常用）"><a href="#1-大O记号-（常用）" class="headerlink" title="1.大O记号 （常用）"></a>1.大O记号 （常用）</h3><p>假设$f(n)和g(n)$的定义域是非负整数，存在两个正整数c和n0，使得n&gt;n0的时候，$f(n)≤c*g(n)$,则$f(n)=O(g(n))$。可见$O(g(n))$可以表示算法运行时间的上界。$O(g(n))$表示的函数集合的函数是阶数不超过$g(n)$的函数。</p>
+<p>例如：$f(n)=2*n+2=O(n)$</p>
+<p>证明：<br>$当n&gt;3的时候，2<em>n +2&lt;3n，所以可选n0=3,c=3，则n&gt;n0的时候，f(n)&lt;c</em>(n)，所以f(n)=O(n)。$</p>
+<p>现在再证明$f(n)=2*n+2=O(n^2)$</p>
+<p>证明：$当n&gt;2的时候，2<em>n+2&lt;2</em>n^2，所以可选n0=2,c=2,则n&gt;n0的时候，f(n)&lt;c*(n^2)，所以f(n)=O(n^2)。$</p>
+<p>同理可证$f(n)=O(n^a)$，a&gt;1</p>
+<h3 id="2-Ω记号"><a href="#2-Ω记号" class="headerlink" title="2.Ω记号"></a>2.Ω记号</h3><p>$f(n) &gt; c*g(n)$<br>Ω记号与大O记号相反，他可以表示算法运行时间的下界。$Ω（g（n））$表示的函数集合的函数是所有阶数超过g(n)的函数。</p>
+<p>例如：$f(n)=2<em>n^2+3</em>n+2=Ω(n^2)$</p>
+<p>证明：$当n&gt;4的时候，2<em>n^2+3</em>n+2&gt;n^2，所以可选n0=4,c=1,则n&gt;n0的时候，f(n)&gt;c*(n^2)，所以f(n)=Ω(n^2)。$</p>
+<p>同理可证$f(n)=Ω(n),f(n)=Ω(1)$</p>
+<h3 id="3-Θ记号"><a href="#3-Θ记号" class="headerlink" title="3.Θ记号"></a>3.Θ记号</h3><p>Θ记号介于大O记号和Ω记号之间。他表示，存在正常数c1,c2,n0，当n&gt;n0的时候，$c1<em>g(n)≤f(n)≤c2</em>g(n)$，则f$(n)=Θ(g(n))$。他表示所有阶数与g(n)相同的函数集合。</p>
+<h3 id="4-小o记号"><a href="#4-小o记号" class="headerlink" title="4.小o记号"></a>4.小o记号</h3><p>$f(n)=o(g(n))当且仅当f(n)=O(g(n))且f(n)≠Ω(g(n))$。也就是说小o记号可以表示时间复杂度的上界，但是一定不等于下界。</p>
+<h3 id="5-例子"><a href="#5-例子" class="headerlink" title="5.例子"></a>5.例子</h3><p>假设f(n)=2n^2+3n+5，</p>
+<p>则f(n)=O(n^2)或者f(n) = O(n^3)或者f(n)=O(n^4)或者……</p>
+<p>f(n)=Ω(n^2)或者f(n)=Ω(n)或者f(n)=Ω(1)</p>
+<p>f(n)=Θ(n^2)</p>
+<p>f(n) = o(n^3)或者f(n)=o(n^4)或者f(n)=o(n^5)或者……</p>
+<hr>
+<h2 id="3-时间复杂度类型"><a href="#3-时间复杂度类型" class="headerlink" title="3.时间复杂度类型"></a>3.时间复杂度类型</h2><h3 id="1-常数阶"><a href="#1-常数阶" class="headerlink" title="1.常数阶"></a>1.常数阶</h3><p>如上面的例子可以知道，执行次数是常数，可以定为O(1)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">   sum =(<span class="number">1</span>+n)*n/<span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="2-线性阶"><a href="#2-线性阶" class="headerlink" title="2.线性阶"></a>2.线性阶</h3><p>如上述的例子可以知道，单次循环n，定为O(n)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=n;i++)&#123;</span><br><span class="line">	  sum=sum+i;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-对数阶"><a href="#3-对数阶" class="headerlink" title="3.对数阶"></a>3.对数阶</h3><p>下面代码就表示是$O(logn)$</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (left &lt;= right) &#123;</span><br><span class="line">          <span class="keyword">int</span> mid = (left - right) / <span class="number">2</span> + right;</span><br><span class="line">          <span class="keyword">if</span> (target == nums[mid]) &#123;</span><br><span class="line">              <span class="keyword">return</span> mid;</span><br><span class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">              left = mid + <span class="number">1</span>;</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              right = mid - <span class="number">1</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-函数调用"><a href="#4-函数调用" class="headerlink" title="4.函数调用"></a>4.函数调用</h3><p>main方法调用外部方法，两个方法都是一层循环，则$O(n^2)$</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;  </span><br><span class="line">	  fun(n);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> count)</span></span>&#123;   </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count;i++)&#123;</span><br><span class="line">    <span class="built_in">printf</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>常见时间复杂度的比较：</p>
+<p>$O(1)&lt;O(logn)&lt;O(n)&lt;O(nlogn)&lt;O(n^2)…&lt;O(n!)&lt;O(nn)$</p>
+<h2 id="4-时间复杂度的计算"><a href="#4-时间复杂度的计算" class="headerlink" title="4. 时间复杂度的计算"></a>4. 时间复杂度的计算</h2><h3 id="1-计算规则"><a href="#1-计算规则" class="headerlink" title="1.计算规则"></a>1.计算规则</h3><p>1） 加法规则 </p>
+<p>$T(n,m) = T1(n) + T2(n) = O ( max (f(n), g(m) ) $</p>
+<p>2) 乘法规则 </p>
+<p>$T(n,m) = T1(n) <em> T2(m) = O (f(n) </em> g(m)) $<br>$O(n)<em>O(m)=O(n</em>m)$</p>
+<p>3)一个特例 </p>
+<p>在大O表示法里面有$T(n) = T1(n) <em> T2(n) = O ( c</em>f(n) ) = O( f(n) )$. 一个特例，如果$T1(n) ＝ O(cf(n))$， c是一个与n无关的任意常数，$T2(n) = O ( f(n) ) $则有 </p>
+<p><strong>总结：</strong></p>
+<p>1.用常数1取代所有的加法常数   t(n)=5 O(1)</p>
+<ol start="2">
+<li>修改后的函数中，只保留最高阶数<br>3.如果最高阶数的常数部分存在不是1，变成1。</li>
+</ol>
+<p>比如：<br>$T(n) = n^3 + n^2 + 29，此时时间复杂度为 O(n^3)。<br>T(n) = 3n^3，此时时间复杂度为 O(n^3)$。</p>
+<img src="/2018/12/02/数据结构之时间复杂度/shijian.png">
+<h3 id="2-主定理"><a href="#2-主定理" class="headerlink" title="2.主定理"></a>2.主定理</h3><p>在算法分析中，主定理（英语：master theorem）提供了用渐近符号（大O符号）表示许多由分治法得到的递推关系式的方法。这种方法最初由Jon Bentlery，Dorothea Haken和James B. Saxe在1980年提出，在那里被描述为解决这种递推的“天下无敌法”(master method)。此方法经由经典算法教科书Cormen，Leiserson，Rivest和Stein的《算法导论》 (introduction to algorithm) 推广而为人熟知</p>
+<img src="/2018/12/02/数据结构之时间复杂度/data_2.png">
+<p>解释： 上面的主定理就是根据递归式，我们需要找到它的时间复杂度，这里为了不区别其他的表示法，全部记为大O表示法，</p>
+<p>例子1:</p>
+<p>假设问题规模为N，某一个递归算法的时间程度记T(N)，已知T(1) = 0,T(N) = T(N/2) + N,求用O表示该算法的时间复杂度？</p>
+<p>分析：直接套用公式可知，a = 1， b = 2 ,f(n) = N , 主定理主要和$n^{\log_b a}$做比较，带入可得 $n^{\log_b a}= 1$ 。<br>所以f（n）&gt; $n^{\log_b a}$ ,符合条件三，所以T（n） = O(n)。</p>
+<p>例子2:</p>
+<p>假设问题规模为N，某一个递归算法的时间程度记T(N)，已知T(1) = 0,T(N) = 2T(N/2) + N/2,求用O表示该算法的时间复杂度？</p>
+<p>分析：直接套用公式可知，a = 2， b = 2 ,f(n) = N/2 , 主定理主要和$n^{\log_b a}$做比较，带入可得 $n^{\log_b a}= n$ 。<br>这里需要注意，f（n）和$n^{\log_b a}$做比较 ，比较的是它们的渐近增长率，所以f（n）= $n^{\log_b a}$ ,符合条件二，都是一次函数，所以T（n） = O(nlogn)。</p>
+<p>例子3:</p>
+<p>求下面代码的时间复杂度：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span><span class="comment">//a为原始柱，b为借助柱,c为目标柱</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        Move(a, c);<span class="comment">//只有一个盘子时直接移</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Hanoi(n - <span class="number">1</span>, a, c, b);<span class="comment">//将A柱子上n-1个盘子借助C柱子移到B上</span></span><br><span class="line">        Move(a, c);<span class="comment">//将A最后一个盘子移到C上</span></span><br><span class="line">        Hanoi(n - <span class="number">1</span>, b, a, c);<span class="comment">//将B柱子借助空A柱子移到C上</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析：我们可以看出，用递归来解决汉诺塔问题是非常方便的选择，最后我们来分析一下汉诺塔问题的时间复杂度。<br>设盘子个数为n时，需要T（n)步，把A柱子n-1个盘子移到B柱子，需要T（n-1)步，A柱子最后一个盘子移到C柱子一步，B柱子上n-1个盘子移到C柱子上T（n-1)步。 得递推公式T（n）=2T（n-1)+1 。这个递推式子不符合主定理，所以需要运用高中的基础数学知识，<br>由递推式可以知道，凑方法，凑成等比数列，凑成通项公式 $O（2^n）$</p>
+<p>例子4:</p>
+<p>假设问题规模为N，某一个递归算法的时间程度记T(N)，已知T(1) = 0,T(N) = T(N- 1) + N,求用O表示该算法的时间复杂度？</p>
+<p>分析：首先要看主定理的限定的条件，b &gt; 1 才可以执行这个主定理，这里需要$T(N) = T(N- 1) + N 变成 T(N) - T(N- 1) = N。<br>可以T（1） ，T（2） …. T(N) 叠加后可以算出T（N）的通项公式。 可以计算O（n^2）$</p>
+<h1 id="三、空间复杂度"><a href="#三、空间复杂度" class="headerlink" title="三、空间复杂度"></a>三、空间复杂度</h1><p>类比于时间复杂度的讨论，一个算法的空间复杂度是指该算法所耗费的存储空间，计算公式计作：S(n) = O(f(n))。其中 n 也为数据的规模，f(n) 在这里指的是 n 所占存储空间的函数。一般情况下，我们的程序在机器上运行时，刨去需要存储程序本身的输入数据等之外，还需要存储对数据操作的「存储单元」。如果输入数据所占空间和算法无关，只取决于问题本身，那么只需要分析算法在实现过程中所占的「辅助单元」即可。如果所需的辅助单元是个常数，那么空间复杂度就是 O(1)。</p>
+<hr>
+<p>参考：<br><a href="https://www.jianshu.com/p/f4cca5ce055a" target="_blank" rel="noopener">https://www.jianshu.com/p/f4cca5ce055a</a></p>
+<p><a href="https://blog.csdn.net/qq_33274645/article/details/52688025" target="_blank" rel="noopener">https://blog.csdn.net/qq_33274645/article/details/52688025</a></p>
+<p><a href="https://mp.weixin.qq.com/s/9njtnqfAatjmjPh4geETqA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/9njtnqfAatjmjPh4geETqA</a></p>
+      </div>
+    </div>
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        <p>本文作者：陶健<br>
+        本文链接： <a href="">https://tojian.github.io/2018/12/02/数据结构之时间复杂度/</a><br>
+        版权声明： 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</p>
+        </blockquote>
+      </div>
+    </div>
+    <div class="article-footer">
+      <div class="article-meta pull-left">
+        <span>
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+        </span>
+      </div>
+      <div class="article-meta pull-right">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(generateToc, 1000);
+</script>
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2018/12/02/数据结构之线性表/" target="_self">数据结构之线性表</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2018/12/02/选择排序/" target="_self">选择排序</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  <a href="#comment" class="comment-anchor"></a>
+  <div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+  <div id="vcomments"></div>
+
+  <script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "",
+      appKey: "",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+
+  <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("", "");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    timerDOMCache[identity] = {
+      dom: timerDOM,
+      times: undefined
+    };
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.innerText = times;
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.innerText = 1;
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+
+</div>
+
+
+      <script>
+  let isMathjaxConfig = false; // 防止重复调用Config，造成性能损耗
+
+  const initMathjaxConfig = () => {
+    if (!window.MathJax) {
+      return;
+    }
+    window.MathJax.Hub.Config({
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    });
+    isMathjaxConfig = true; // 
+  };
+  if (isMathjaxConfig === false) { // 如果：没有配置MathJax
+    initMathjaxConfig();
+  }
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
+  
+</script>
+<footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+  </p>
+</footer>
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 10, 14, 23, 58).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+      <aside id="sidebar">
+        <p id="sidebar-header"></p>
+        <ol id="sidebar-toc"></ol>
+      </aside>
+
+    </div>
+  </body>
+
+</html>
