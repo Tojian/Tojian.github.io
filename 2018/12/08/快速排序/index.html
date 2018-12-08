@@ -8,7 +8,7 @@
   
   
   
-  <title>排序之希尔排序 | tao jian</title>
+  <title>排序之快速排序 | tao jian</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -150,7 +150,7 @@
 <div>
   <div class="post">
     <h1 class="article-title">
-      <span>排序之希尔排序</span>
+      <span>排序之快速排序</span>
     </h1>
     <div class="article-top-meta">
       <span>
@@ -166,41 +166,51 @@
           
       </span>
       <span>
-        浏览 : <span class="article-timer" data-identity="希尔排序"></span>
+        浏览 : <span class="article-timer" data-identity="快速排序"></span>
       </span>
     </div>
     <div class="article-content">
       <div class="markdown-body">
         <p></p>
 
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p>　希尔排序是希尔（Donald Shell）于1959年提出的一种排序算法。希尔排序也是一种插入排序，它是简单插入排序经过改进之后的一个更高效的版本，也称为缩小增量排序。</p>
-<p> 首先我们知道直接插入排序的时间复杂度最低的时候应该是序列基本有序，效率最高，在待排序的记录个数较少时，效率较高。基于这个基础理论，希尔排序的基本思想如下：</p>
+<h1 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h1><h1 id="一、算法介绍"><a href="#一、算法介绍" class="headerlink" title="一、算法介绍"></a>一、算法介绍</h1><p>快速排序(Quick Sort)：它的基本思想是，通过一趟排序将待排记录分割成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，分别对这丙部分继续进行快速排序，直至整个序列有序。</p>
+<p>任取一个元素 (如第一个) 为中心<br>所有比它小的元素一律前放，比它大的元素一律后放，形成左右两个子表；<br>对各子表重新选择中心元素并依此规则调整，直到每个子表的元素只剩一个</p>
+<p>①每一趟的子表的形成是采用从两头向中间交替式逼近法；</p>
+<p>②由于每趟中对各子表的操作都相似，可采用递归算法。</p>
+<h1 id="二、基本步骤"><a href="#二、基本步骤" class="headerlink" title="二、基本步骤"></a>二、基本步骤</h1><img src="/2018/12/08/快速排序/27.png">
+<p>设置两个指针i，j,首先在序列里面选出一个枢纽temp出来，将j指向的数字和temp比较，如果比temp大，则减1，如果比temp小，应该把当前j指向的位置上面的数值放到i的位置，同时移动i的位置。如果i比temp小，则i ++，如果比temp大，则将值放到j的位置，这时候移动j的指针。</p>
+<img src="/2018/12/08/快速排序/26.gif">
+<h1 id="三、算法分析"><a href="#三、算法分析" class="headerlink" title="三、算法分析"></a>三、算法分析</h1><p>最好：划分后，左侧右侧子序列的长度相同,</p>
+<p>最坏：从小到大排好序，递归树成为单支树，每次划分只得到一个比上一次少一个对象的子序列，必须经过 n-1 趟才能把所有对象定位，而且第 i 趟需要经过 n-i 次关键码比较才能找到第 i 个对象的安放位置</p>
+<img src="/2018/12/08/快速排序/12.png">
+<p>若出现各种可能排列的概率相同，则可取最好情况和最坏情况的平均情况</p>
 <blockquote>
-<p>先将整个待排记录序列分割成若干子序列,分别进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。</p>
+<p>时间效率：O(nlog2n) —每趟确定的元素呈指数增加<br>空间效率：O（log2n）—递归要用到栈空间<br>稳 定 性： 不稳定   —可选任一元素为支点</p>
 </blockquote>
-<p><strong>技巧</strong>：</p>
-<p>子序列的构成不是简单地“逐段分割”<br>将相隔某个增量dk的记录组成一个子序列<br>让增量dk逐趟缩短（例如依次取5,3,1）<br>直到dk＝1为止。</p>
-<p><strong>优点：</strong></p>
-<p>小元素跳跃式前移<br>最后一趟增量为1时，序列已基本有序<br>平均性能优于直接插入排序</p>
-<blockquote>
-<p>如何选择最佳d序列，目前尚未解决<br>最后一个增量值必须为1，无除1以外的公因子<br>不宜在链式存储结构上实现</p>
-</blockquote>
-<h2 id="二、过程"><a href="#二、过程" class="headerlink" title="二、过程"></a>二、过程</h2><blockquote>
-<p>这部分参考<a href="https://www.cnblogs.com/chengxiao/p/6104371.html，" target="_blank" rel="noopener">https://www.cnblogs.com/chengxiao/p/6104371.html，</a> 主要是图画的特别好</p>
-</blockquote>
-<p>我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2…1}，称为增量序列。希尔排序的增量序列的选择与证明是个数学难题，我们选择的这个增量序列是比较常用的，也是希尔建议的增量，称为希尔增量，但其实这个增量序列不是最优的。此处我们做示例使用希尔增量。</p>
-<img src="/2018/12/08/希尔排序/25.png">
-<h2 id="三-算法分析"><a href="#三-算法分析" class="headerlink" title="三.算法分析"></a>三.算法分析</h2><img src="/2018/12/08/希尔排序/16.png">
-<h2 id="四、完整代码"><a href="#四、完整代码" class="headerlink" title="四、完整代码"></a>四、完整代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShellSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> inner, outer;</span><br><span class="line">        <span class="keyword">int</span> temp;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> h = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (h &lt;= array.length / <span class="number">3</span>) &#123;</span><br><span class="line">            h = h * <span class="number">3</span> + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (h &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (outer = h; outer &lt; array.length; outer++) &#123;</span><br><span class="line">                temp = array[outer];</span><br><span class="line">                inner = outer;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">while</span> (inner &gt; h - <span class="number">1</span> &amp;&amp; array[inner - h] &gt;= temp) &#123;</span><br><span class="line">                    array[inner] = array[inner - h];</span><br><span class="line">                    inner -= h;</span><br><span class="line">                &#125;</span><br><span class="line">                array[inner] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">            h = (h - <span class="number">1</span>) / <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> [] array = &#123;<span class="number">5</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">4</span>&#125;;</span><br><span class="line">        System.out.println(<span class="string">"Before: "</span> + Arrays.toString(array));</span><br><span class="line">        sort(array);</span><br><span class="line">        System.out.println(<span class="string">"After:  "</span> + Arrays.toString(array));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<p>参考：<br><a href="https://www.cnblogs.com/chengxiao/p/6104371.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengxiao/p/6104371.html</a></p>
+<h2 id="1-如何选枢纽"><a href="#1-如何选枢纽" class="headerlink" title="1.如何选枢纽"></a>1.如何选枢纽</h2><p>由上述描述可以知道，快速排序是以枢纽的点进行来回交换，所以快速排序的排序趟数和初始的序列有关系。<br>所以选择快速排序的枢纽点是非常重要的，因为关系到排序的效率。</p>
+<p><strong>取前或后法</strong>：序列中的第一个或最后一个元素作为基准，如果输入序列（上文中的数组）是随机的，处理时间可以接受的。如果数组已经有序时，此时的分割就是一个非常不好的分割。因为每次划分只能使待排序序列减一，此时为最坏情况，时间复杂度为Θ(n^2)。而且，输入的数据是有序或部分有序的情况是相当常见的。因此，使用第一个元素作为枢纽元是非常糟糕的</p>
+<p><strong>随机选取基准</strong>：<br>这是一种相对安全的策略。由于枢轴的位置是随机的，那么产生的分割也不会总是会出现劣质的分割。在整个数组数字全相等时，仍然是最坏情况，时间复杂度是O(n2）。所以随机化快速排序可以对于绝大多数输入数据达到O(nlogn）的期望时间复杂度。</p>
+<p><strong>三数取中法：</strong>在快排的过程中，每一次我们要取一个元素作为枢纽值，以这个数字来将序列划分为两部分。在此我们采用三数取中法，也就是取左端、中间、右端三个数，然后进行排序，将中间数作为枢纽值。显然使用三数中值分割法消除了预排序输入的不好情形，并且减少快排大约14%的比较次数。</p>
+<h2 id="2-如何证明时间复杂度"><a href="#2-如何证明时间复杂度" class="headerlink" title="2.如何证明时间复杂度"></a>2.如何证明时间复杂度</h2><p><strong>1、最优情况</strong></p>
+<p>在最优情况下，Partition每次都划分得很均匀，如果排序n个关键字，其递归树的深度就为 [log2n]+1（ [x] 表示不大于 x 的最大整数），即仅需递归 log2n 次，需要时间为T（n）的话，第一次Partiation应该是需要对整个数组扫描一遍，做n次比较。然后，获得的枢轴将数组一分为二，那么各自还需要T（n/2）的时间（注意是最好情况，所以平分两半）。于是不断地划分下去，就有了下面的不等式推断：<br>这说明，在最优的情况下，快速排序算法的时间复杂度为O(nlogn)。</p>
+<p><strong>2.最坏情况</strong></p>
+<p>然后再来看最糟糕情况下的快排，当待排序的序列为正序或逆序排列时，且每次划分只得到一个比上一次划分少一个记录的子序列，注意另一个为空。如果递归树画出来，它就是一棵斜树。此时需要执行n‐1次递归调用，且第i次划分需要经过n‐i次关键字的比较才能找到第i个记录，也就是枢轴的位置，因此比较次数为n(n-1)/2，最终其时间复杂度为O(n^2)。</p>
+<p><strong>3.平均时间复杂度</strong></p>
+<p>直接设对规模的数组排序需要的时间期望为, 期望其实就是平均复杂度换个说法.<br>空表的时候不用排, 所以初值条件就是 T(0) = 0 .所谓快排就是随便取出一个数,一般是第一个数,然后小于等于他的放左边, 大于他的的排右边.比如左边 k 个那接下来还要排: T(n - k) + T (k - 1) 的时间.然后 k 多少那是不确定的, 遍历 1~ n , 出现概率都是相等的. 另外分割操作本身也要时间 P(n) , 操作花费是线性时间 P(n) = cn , 这也要加进去, 所以一共是:</p>
+<img src="/2018/12/08/快速排序/17.png">
+<h1 id="四、完整代码示例"><a href="#四、完整代码示例" class="headerlink" title="四、完整代码示例"></a>四、完整代码示例</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//任取一个元素 (如第一个) 为中心</span></span><br><span class="line">    <span class="comment">//所有比它小的元素一律前放，比它大的元素一律后放，形成左右两个子表；</span></span><br><span class="line">    <span class="comment">//对各子表重新选择中心元素并依此规则调整，直到每个子表的元素只剩一个</span></span><br><span class="line">    <span class="comment">//一趟排序过程后我们返回枢纽的位置</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//选择枢纽元素</span></span><br><span class="line">        <span class="keyword">int</span> p = A[left];</span><br><span class="line">        <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">            <span class="comment">//如果尾指针位置的数比枢纽数要大，移动尾指针的位置，否则就把所指示的值给首指针的位置</span></span><br><span class="line">            <span class="keyword">while</span> (left &lt; right &amp;&amp; A[right] &gt;= p) &#123;</span><br><span class="line">                --right;</span><br><span class="line">            &#125;</span><br><span class="line">            A[left] = A[right];</span><br><span class="line">            <span class="comment">//如果首指针位置的数比枢纽数要小，移动首指针的位置，否则就把所指示的值给尾指针的位置</span></span><br><span class="line">            <span class="keyword">while</span> (left &lt; right &amp;&amp; A[left] &lt;= p) &#123;</span><br><span class="line">                ++left;</span><br><span class="line">            &#125;</span><br><span class="line">            A[right] = A[left];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//此时的首尾指针已经相等，把枢纽的值赋给首尾指针相等的位置即可</span></span><br><span class="line">        A[left] = p;</span><br><span class="line">        <span class="keyword">return</span> left;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//快速排序的递归</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Quick</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//定义一个枢纽的位置</span></span><br><span class="line">        <span class="keyword">int</span> pnode;</span><br><span class="line">        <span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">            pnode = partition(A, left, right);</span><br><span class="line">            Quick(A, left, pnode - <span class="number">1</span>);</span><br><span class="line">            Quick(A, pnode + <span class="number">1</span>, right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://www.jianshu.com/p/c8b1384238f7" target="_blank" rel="noopener">https://www.jianshu.com/p/c8b1384238f7</a></p>
+<p><a href="https://www.cnblogs.com/chengxiao/p/6262208.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengxiao/p/6262208.html</a></p>
+<p><a href="https://blog.csdn.net/oohaha_123/article/details/26558363" target="_blank" rel="noopener">https://blog.csdn.net/oohaha_123/article/details/26558363</a></p>
+<p><a href="https://www.zhihu.com/question/22393997/answer/406278523" target="_blank" rel="noopener">https://www.zhihu.com/question/22393997/answer/406278523</a></p>
+<p><a href="https://www.cnblogs.com/onepixel/articles/7674659.html" target="_blank" rel="noopener">https://www.cnblogs.com/onepixel/articles/7674659.html</a></p>
       </div>
     </div>
     <div class="copy-right">
       <div class="markdown-body">
         <blockquote>
         <p>本文作者：陶健<br>
-        本文链接： <a href="">https://www.taobigbig.com/2018/12/08/希尔排序/</a><br>
+        本文链接： <a href="">https://www.taobigbig.com/2018/12/08/快速排序/</a><br>
         版权声明： 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</p>
         </blockquote>
       </div>
@@ -235,15 +245,9 @@ setTimeout(generateToc, 1000);
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2018/12/08/堆排序/" target="_self">排序之堆排序</a>
+        <a href="/2018/12/08/希尔排序/" target="_self">排序之希尔排序</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2018/12/08/快速排序/" target="_self">排序之快速排序</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
