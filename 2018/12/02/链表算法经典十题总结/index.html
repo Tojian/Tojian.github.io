@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据结构与算法之美," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="整理了链表的经典算法">
+<meta name="keywords" content="数据结构与算法之美">
+<meta property="og:type" content="article">
+<meta property="og:title" content="链表算法经典十题总结">
+<meta property="og:url" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/index.html">
+<meta property="og:site_name" content="tao jian">
+<meta property="og:description" content="整理了链表的经典算法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/5.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/6.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/7.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/7.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/9.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/10.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/11.png">
+<meta property="og:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/12.png">
+<meta property="og:updated_time" content="2018-12-03T03:59:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="链表算法经典十题总结">
+<meta name="twitter:description" content="整理了链表的经典算法">
+<meta name="twitter:image" content="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/5.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/"/>
+
+
+
+
+
+  <title>链表算法经典十题总结 | tao jian</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tao jian</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学习积累</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.taobigbig.cn/2018/12/02/链表算法经典十题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tao jian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tao jian">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">链表算法经典十题总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-02T21:56:25+08:00">
+                2018-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法之美/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法之美</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote><p>整理了链表的经典算法</p>
+</blockquote>
+<a id="more"></a> 
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>由于前面写了一些数据结构的相关的文章，但是都是偏基本的数据结构知识，并没有实际的算法题加以实践，故整理十道题目，都是比较常见的链表类的算法题，也参考了优秀的博客。<br>预备的数据结构知识点：</p>
+<p><a href="https://www.cnblogs.com/tojian/p/9855792.html" target="_blank" rel="noopener">数据结构绪论</a><br><a href="https://www.cnblogs.com/tojian/p/10027129.html" target="_blank" rel="noopener">循序渐进学习栈和队列</a><br><a href="https://www.cnblogs.com/tojian/p/10020424.html" target="_blank" rel="noopener">循序渐进学习数据结构之线性表</a><br><a href="https://www.cnblogs.com/tojian/p/10012619.html" target="_blank" rel="noopener">循序渐进学习时间复杂度</a></p>
+<hr>
+<h1 id="1-链表的倒数第K个结点"><a href="#1-链表的倒数第K个结点" class="headerlink" title="1.链表的倒数第K个结点"></a>1.链表的倒数第K个结点</h1><h2 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h2><p>输入一个链表，输出该链表中倒数第k个结点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾结点是倒数第1个结点。例如一个链表有6个结点，从头结点开始它们的值依次是1、2、3、4、5、6。这个链表的倒数第3个结点是值为4的结点,需要保证时间复杂度。</p>
+<img src="/2018/12/02/链表算法经典十题总结/5.png">
+<h2 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a>算法思路：</h2><p>设置两个指针p1,p2，从头到尾开始出发，一个指针先出发k个节点，然后第二个指针再进行出发，当第一个指针到达链表的节点的时候，则第二个指针表示的位置就是链表的倒数第k个节点的位置。</p>
+<img src="/2018/12/02/链表算法经典十题总结/6.png">
+<h2 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h2><p><code>`</code>c<br>//倒数第k个结点<br>ListNode findKth(ListNode head,int k){</p>
+<p>   ListNode cur=head;<br>   ListNode now=head;<br>   int i=0;<br>   while(cur!=null&amp;i++&lt;k){<br>   cur=cur-&gt;next;<br>   }</p>
+<p>   while(cur!=null){<br>     now=now-&gt;next;<br>     cur=cur-&gt;next;<br>   }</p>
+<p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">&gt; 总结：当我们用一个指针遍历链表不能解决问题的时候，可以尝试用两个指针来遍历链表。可以让其中一个指针遍历的速度快一些（比如一次在链表上走两步），或者让它先在链表上走若干步。</span><br><span class="line"></span><br><span class="line">## 2.从尾到头打印链表（递归和非递归）</span><br><span class="line"></span><br><span class="line">## 问题描述：</span><br><span class="line"></span><br><span class="line">输入一个单链表链表，从尾到头打印链表每个节点的值。输入描述：输入为链表的表头；输出描述：输出为需要打印的“新链表”的表头。</span><br><span class="line"></span><br><span class="line">## 算法思路：</span><br><span class="line">首先我们想到从尾到头打印出来，由于单链表的查询只能从头到尾，所以可以想出栈的特性，先进后出。所以非递归可以把链表的点全部放入一个栈当中，然后依次取出栈顶的位置即可。</span><br><span class="line"></span><br><span class="line">## 代码如下：</span><br><span class="line"></span><br><span class="line">```c//非递归void PrintReversing(ListNode * head)&#123; //利用一个栈  Stack stack;   ListNode *node=head-&gt;next;//将链表的结点压入  while(node!=null)&#123;    stack.push(node);     node=node-&gt;next;  &#125;  ListNode *popNode;  while(stack.isEmpty())&#123;  //获得最上面的元素     popNode=stack.top();	 //打印     printf(&quot;%d\t&quot;,popNode-&gt;value);//弹出元素	 stack.pop();  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/递归<span class="function"><span class="keyword">void</span> <span class="title">printRevese</span><span class="params">(ListNode *head)</span></span>&#123; <span class="keyword">if</span>(head!=null)&#123;  <span class="keyword">if</span>(head-&gt;next!=null)&#123;  printRevese(head-&gt;next);  &#125;  print(<span class="string">"%d\t"</span>,head-&gt;value); &#125;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>非递归的描述当中，经常会用栈或者队列这些数据结构来改写一些递归的算法。其实递归的算法的时间复杂度是递归树的高度，所以递归的层数越高，时间复杂度也就会越高的。</p>
+</blockquote>
+<h1 id="3-如何判断一个链表有环"><a href="#3-如何判断一个链表有环" class="headerlink" title="3.如何判断一个链表有环"></a>3.如何判断一个链表有环</h1><h2 id="问题描述：-1"><a href="#问题描述：-1" class="headerlink" title="问题描述："></a>问题描述：</h2><p>有一个单向链表，链表当中有可能出现“环”，如何用程序判断出这个链表是有环链表？<br>不允许修改链表结构。时间复杂度O(n)，空间复杂度O(1)。</p>
+<h2 id="算法思路：-1"><a href="#算法思路：-1" class="headerlink" title="算法思路："></a>算法思路：</h2><h3 id="方法一、穷举遍历"><a href="#方法一、穷举遍历" class="headerlink" title="方法一、穷举遍历"></a>方法一、穷举遍历</h3><p>首先从头节点开始，依次遍历单链表的每一个节点。每遍历到一个新节点，就从头节点重新遍历新节点之前的所有节点，用新节点ID和此节点之前所有节点ID依次作比较。如果发现新节点之前的所有节点当中存在相同节点ID，则说明该节点被遍历过两次，链表有环；如果之前的所有节点当中不存在相同的节点，就继续遍历下一个新节点，继续重复刚才的操作。</p>
+<p>假设从链表头节点到入环点的距离是D，链表的环长是S。那么算法的时间复杂度是0+1+2+3+….+(D+S-1) = (D+S-1)<em>(D+S)/2 ， 可以简单地理解成 O(N</em>N)。而此算法没有创建额外存储空间，空间复杂度可以简单地理解成为O(1)。</p>
+<blockquote>
+<p>这种方法是暴力破解的方式，时间复杂度太高。</p>
+</blockquote>
+<h3 id="方法二、快慢指针"><a href="#方法二、快慢指针" class="headerlink" title="方法二、快慢指针"></a>方法二、快慢指针</h3><p>首先创建两个指针1和2，同时指向这个链表的头节点。然后开始一个大循环，在循环体中，让指针1每次向下移动一个节点，让指针2每次向下移动两个节点，然后比较两个指针指向的节点是否相同。如果相同，则判断出链表有环，如果不同，则继续下一次循环。</p>
+<img src="/2018/12/02/链表算法经典十题总结/7.png">
+<blockquote>
+<p>说明 ：在循环的环里面，跑的快的指针一定会反复遇到跑的慢的指针 ，比如：在一个环形跑道上，两个运动员在同一地点起跑，一个运动员速度快，一个运动员速度慢。当两人跑了一段时间，速度快的运动员必然会从速度慢的运动员身后再次追上并超过，原因很简单，因为跑道是环形的。</p>
+</blockquote>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 判断单链表是否存在环</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> head</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">boolean</span> <span class="title">isLoopList</span><span class="params">(ListNode&lt;T&gt; head)</span></span>&#123;</span><br><span class="line">    ListNode&lt;T&gt; slowPointer, fastPointer;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用快慢指针，慢指针每次向前一步，快指针每次两步</span></span><br><span class="line">    slowPointer = fastPointer = head;</span><br><span class="line">    <span class="keyword">while</span>(fastPointer != <span class="keyword">null</span> &amp;&amp; fastPointer.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">        slowPointer = slowPointer.next;</span><br><span class="line">        fastPointer = fastPointer.next.next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//两指针相遇则有环</span></span><br><span class="line">        <span class="keyword">if</span>(slowPointer == fastPointer)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-链表中环的大小"><a href="#4-链表中环的大小" class="headerlink" title="4.链表中环的大小"></a>4.链表中环的大小</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>有一个单向链表，链表当中有可能出现“环”，那么如何知道链表中环的长度呢？</p>
+<h2 id="算法思路"><a href="#算法思路" class="headerlink" title="算法思路"></a>算法思路</h2><p> 由<a href="# 3.如何判断一个链表有环">3.如何判断一个链表有环</a>可以知道，快慢指针可以找到链表是否有环存在，如果两个指针第一次相遇后，第二次相遇是什么时候呢？第二次相遇是不是可以认为快的指针比慢的指针多跑了一个环的长度。所以找到第二次相遇的时候就找到了环的大小。<br><img src="/2018/12/02/链表算法经典十题总结/7.png"></p>
+<h2 id="代码如下"><a href="#代码如下" class="headerlink" title="代码如下"></a>代码如下</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//求环中相遇结点</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">cycleNode</span><span class="params">(Node head)</span></span>&#123;</span><br><span class="line">    <span class="comment">//链表为空则返回null</span></span><br><span class="line">    <span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    Node first = head;</span><br><span class="line">    Node second = head;</span><br><span class="line">    <span class="keyword">while</span>(first != <span class="keyword">null</span> &amp;&amp; first.next != <span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">        first = first.next.next;</span><br><span class="line">        second = second.next;</span><br><span class="line">        <span class="comment">//两指针相遇，则返回相遇的结点 </span></span><br><span class="line">        <span class="keyword">if</span>(first == second)</span><br><span class="line">            <span class="keyword">return</span> first;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//链表无环，则返回null</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCycleLength</span><span class="params">(Node head)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    Node node = cycleNode(head);</span><br><span class="line">    <span class="comment">//node为空则代表链表无环</span></span><br><span class="line">    <span class="keyword">if</span>(node == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> length=<span class="number">1</span>;</span><br><span class="line">    Node current = node.next;</span><br><span class="line">    <span class="comment">//再次相遇则循环结束</span></span><br><span class="line">    <span class="keyword">while</span>(current != node)&#123;</span><br><span class="line">        length++;</span><br><span class="line">        current = current.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> length;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="5-链表中环的入口结点"><a href="#5-链表中环的入口结点" class="headerlink" title="5.链表中环的入口结点"></a>5.链表中环的入口结点</h1><h2 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h2><p>给一个链表，若其中包含环，请找出该链表的环的入口结点，否则，输出null。</p>
+<h2 id="算法思路-1"><a href="#算法思路-1" class="headerlink" title="算法思路"></a>算法思路</h2><p>如果链表存在环，那么计算出环的长度n，然后准备两个指针pSlow，pFast，pFast先走n步，然后pSlow和pFase一块走，当两者相遇时，即为环的入口处；所以解决三个问题：如何判断一个链表有环；如何判断链表中环的大小；链表中环的入口结点。实际上最后的判断就如同链表的倒数第k个节点。</p>
+<h2 id="代码如下-1"><a href="#代码如下-1" class="headerlink" title="代码如下"></a>代码如下</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">EntryNodeOfLoop</span><span class="params">(ListNode pHead)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(pHead.next == <span class="keyword">null</span> || pHead.next.next == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        ListNode slow = pHead.next;</span><br><span class="line">        ListNode fast = pHead.next.next;</span><br><span class="line">        <span class="keyword">while</span>(fast != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(fast == slow)&#123;</span><br><span class="line">                fast = pHead;</span><br><span class="line">                <span class="keyword">while</span>(fast != slow)&#123;</span><br><span class="line">                    fast = fast.next;</span><br><span class="line">                    slow = slow.next;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> fast;</span><br><span class="line">            &#125;</span><br><span class="line">            slow = slow.next;</span><br><span class="line">            fast = fast.next.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以上5题的套路其实都非常类似，第5题可以说是前面几道题的一个汇总题目吧，链表类的题利用快慢指针，两个指针确实挺多的，如下面题目7</p>
+</blockquote>
+<h1 id="6-单链表在时间复杂度为O-1-删除链表结点"><a href="#6-单链表在时间复杂度为O-1-删除链表结点" class="headerlink" title="6.单链表在时间复杂度为O(1)删除链表结点"></a>6.单链表在时间复杂度为O(1)删除链表结点</h1><h2 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定单链表的头指针和一个结点指针，定一个函数在时间复杂度为O(1)删除链表结点</p>
+<h2 id="算法思路-2"><a href="#算法思路-2" class="headerlink" title="算法思路"></a>算法思路</h2><p>根据了解的条件，如果只有一个单链表的头指针，链表的删除操作其实正常的是O（n）的时间复杂度。因为首先想到的是从头开始顺序遍历单链表，然后找到节点，再进行删除。但是这样的方式达到的时间复杂度并不是O（1）；实际上纯粹的删除节点操作，链表的删除操作是O（1）。前提是需要找到删除指定节点的前一个结点就可以。</p>
+<p>那么是不是必须找到删除指定节点的前一个结点呢？如果我们删除的节点是A，那么我们把A下一个节点B和A的data进行交换，然后我们删除节点B，是不是也可以达到同样的效果。</p>
+<p>答案是肯定的。<br>既然不能在O(1)得到删除节点的前一个元素，但我们可以轻松得到后一个元素，这样，我们何不把后一个元素赋值给待删除节点，这样也就相当于是删除了当前元素。可见，该方法可行，但如果待删除节点为最后一个节点，则不能按照以上思路，没有办法，只能按照常规方法遍历，时间复杂度为O(n)，是不是不符合题目要求呢？可能很多人在这就会怀疑自己的思考，从而放弃这种思路，最后可能放弃这道题，这就是这道面试题有意思的地方，虽看简单，但是考察了大家的分析判断能力，是否拥有强大的心理，充分自信。其实我们分析一下，仍然是满足题目要求的，如果删除节点为前面的n-1个节点，则时间复杂度为O(1)，只有删除节点为最后一个时，时间复杂度才为O(n)，所以平均的时间复杂度为：（O(1) * (n-1) + O(n)）/n = O(1);仍然为O(1).</p>
+<h2 id="代码如下-2"><a href="#代码如下-2" class="headerlink" title="代码如下"></a>代码如下</h2><p><code>`</code>java<br>/* Delete a node in a list with O(1)</p>
+<ul>
+<li>input:    pListHead - the head of list</li>
+<li>pToBeDeleted - the node to be deleted<br>*/</li>
+</ul>
+<p>struct  ListNode<br>{<br>    int            m_nKey;<br>    ListNode*    m_pNext;<br>};</p>
+<p>void DeleteNode(ListNode <em>pListHead, ListNode </em>pToBeDeleted)<br>{<br>    if (!pListHead || !pToBeDeleted)<br>        return;</p>
+<pre><code>if (pToBeDeleted-&gt;m_pNext != NULL) { 
+    ListNode *pNext = pToBeDeleted-&gt;m_pNext;
+    pToBeDeleted-&gt;m_pNext = pNext-&gt;m_pNext;
+    pToBeDeleted-&gt;m_nKey = pNext-&gt;m_nKey;
+
+    delete pNext;
+    pNext = NULL;
+}
+else { //待删除节点为尾节点
+    ListNode *pTemp = pListHead;
+    while(pTemp-&gt;m_pNext != pToBeDeleted) 
+        pTemp = pTemp-&gt;m_pNext;
+    pTemp-&gt;m_pNext = NULL;
+
+    delete pToBeDeleted;
+    pToBeDeleted = NULL;
+}
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt; 题目的考虑的点，也很特别</span><br><span class="line"># 7.两个链表的第一个公共结点</span><br><span class="line"></span><br><span class="line">## 问题描述</span><br><span class="line"></span><br><span class="line">输入两个单链表，找出他们的第一个公共结点。</span><br><span class="line"></span><br><span class="line">## 算法思路</span><br><span class="line"></span><br><span class="line">我们了解到单链表的指针是指向下一个节点的，如果两个单链表的第一个公共节点就说明他们后面的节点都是在一起的。类似下图，由于两个链表的长度可能是不一致的，所以首先比较两个链表的长度m，n，然后用两个指针分别指向两个链表的头节点，让较长的链表的指针先走|m-n|个长度，如果他们下面的节点是一样的，就说明出现了第一个公共节点。</span><br><span class="line">&#123;% asset_img 8.png %&#125;</span><br><span class="line"></span><br><span class="line">## 代码如下</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">public class ListNode &#123;</span><br><span class="line">    int val;</span><br><span class="line">    ListNode next = null;</span><br><span class="line"> </span><br><span class="line">    ListNode(int val) &#123;</span><br><span class="line">        this.val = val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;*/</span><br><span class="line">public class Solution &#123;</span><br><span class="line">   public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) &#123;</span><br><span class="line">       if (pHead1 == null||pHead2 == null) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int count1 = 0;</span><br><span class="line">        ListNode p1 = pHead1;</span><br><span class="line">        while (p1!=null)&#123;</span><br><span class="line">            p1 = p1.next;</span><br><span class="line">            count1++;</span><br><span class="line">        &#125;</span><br><span class="line">        int count2 = 0;</span><br><span class="line">        ListNode p2 = pHead2;</span><br><span class="line">        while (p2!=null)&#123;</span><br><span class="line">            p2 = p2.next;</span><br><span class="line">            count2++;</span><br><span class="line">        &#125;</span><br><span class="line">        int flag = count1 - count2;</span><br><span class="line">        if (flag &gt; 0)&#123;</span><br><span class="line">            while (flag&gt;0)&#123;</span><br><span class="line">                pHead1 = pHead1.next;</span><br><span class="line">                flag --;</span><br><span class="line">            &#125;</span><br><span class="line">        while (pHead1!=pHead2)&#123;</span><br><span class="line">            pHead1 = pHead1.next;</span><br><span class="line">            pHead2 = pHead2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        return pHead1;</span><br><span class="line">    &#125;</span><br><span class="line">        if (flag &lt;= 0)&#123;</span><br><span class="line">            while (flag&lt;0)&#123;</span><br><span class="line">                pHead2 = pHead2.next;</span><br><span class="line">                flag ++;</span><br><span class="line">            &#125;</span><br><span class="line">            while (pHead1 != pHead2)&#123;</span><br><span class="line">                pHead2 = pHead2.next;</span><br><span class="line">                pHead1 = pHead1.next;</span><br><span class="line">            &#125;</span><br><span class="line">            return pHead1;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="8-合并两个排序的链表"><a href="#8-合并两个排序的链表" class="headerlink" title="8.合并两个排序的链表"></a>8.合并两个排序的链表</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。</p>
+<h2 id="算法思路-3"><a href="#算法思路-3" class="headerlink" title="算法思路"></a>算法思路</h2><p>这道题比较简单，合并两个有序的链表，就可以设置两个指针进行操作即可，同时比较大小，但是也需要注意两个链表的长度进行比较。</p>
+<h2 id="代码如下-3"><a href="#代码如下-3" class="headerlink" title="代码如下"></a>代码如下</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">public class ListNode &#123;</span></span><br><span class="line"><span class="comment">    int val;</span></span><br><span class="line"><span class="comment">    ListNode next = null;</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">    ListNode(int val) &#123;</span></span><br><span class="line"><span class="comment">        this.val = val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">Merge</span><span class="params">(ListNode list1,ListNode list2)</span> </span>&#123;</span><br><span class="line">        ListNode head = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">        ListNode cur = head;</span><br><span class="line">        <span class="keyword">while</span> (list1 != <span class="keyword">null</span> &amp;&amp; list2 != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (list1.val &lt;= list2.val) &#123;</span><br><span class="line">                cur.next = list1;</span><br><span class="line">                list1 = list1.next;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                cur.next = list2;</span><br><span class="line">                list2 = list2.next;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (list1 != <span class="keyword">null</span>)</span><br><span class="line">            cur.next = list1;</span><br><span class="line">        <span class="keyword">if</span> (list2 != <span class="keyword">null</span>)</span><br><span class="line">            cur.next = list2;</span><br><span class="line">        <span class="keyword">return</span> head.next;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="9-复杂的链表复制"><a href="#9-复杂的链表复制" class="headerlink" title="9.复杂的链表复制"></a>9.复杂的链表复制</h1><h2 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h2><p>题目：请实现函数ComplexListNode Clone(ComplexListNode head)，复制一个复杂链表。在复杂链表中，每个结点除了有一个Next指针指向下一个结点外，还有一个Sibling指向链表中的任意结点或者NULL。</p>
+<p>　下图是一个含有5个结点的复杂链表。图中实线箭头表示m_pNext指针，虚线箭头表示m_pSibling指针。为简单起见，指向NULL的指针没有画出。<br><img src="/2018/12/02/链表算法经典十题总结/9.png"></p>
+<h2 id="算法思路-4"><a href="#算法思路-4" class="headerlink" title="算法思路"></a>算法思路</h2><h3 id="第一种：O-n2-的普通解法"><a href="#第一种：O-n2-的普通解法" class="headerlink" title="第一种：O(n2)的普通解法"></a>第一种：O(n2)的普通解法</h3><p>　　第一步是复制原始链表上的每一个结点，并用Next节点链接起来；<br>　　第二步是设置每个结点的Sibling节点指针。
+　　</p>
+<h3 id="第二种-：借助辅助空间的O-n-解法"><a href="#第二种-：借助辅助空间的O-n-解法" class="headerlink" title="第二种 ：借助辅助空间的O(n)解法"></a>第二种 ：借助辅助空间的O(n)解法</h3><p>　　第一步仍然是复制原始链表上的每个结点N创建N’，然后把这些创建出来的结点用Next链接起来。同时我们把&lt;N,N’&gt;的配对信息放到一个哈希表中。<br>　　第二步还是设置复制链表上每个结点的m_pSibling。由于有了哈希表，我们可以用O(1)的时间根据S找到S’。</p>
+<h3 id="第三种：不借助辅助空间的O-n-解法"><a href="#第三种：不借助辅助空间的O-n-解法" class="headerlink" title="第三种：不借助辅助空间的O(n)解法"></a>第三种：不借助辅助空间的O(n)解法</h3><p>　　第一步仍然是根据原始链表的每个结点N创建对应的N’。（把N’链接在N的后面）<br>　　<img src="/2018/12/02/链表算法经典十题总结/10.png"><br>　　第二步设置复制出来的结点的Sibling。（把N’的Sibling指向N的Sibling）<br>　　<img src="/2018/12/02/链表算法经典十题总结/11.png"><br>　　第三步把这个长链表拆分成两个链表：把奇数位置的结点用Next链接起来就是原始链表，偶数数值的则是复制链表。</p>
+  <img src="/2018/12/02/链表算法经典十题总结/12.png">
+<h2 id="代码如下-4"><a href="#代码如下-4" class="headerlink" title="代码如下"></a>代码如下</h2><p><code>`</code>java<br>public class Solution {</p>
+<p>public RandomListNode Clone(RandomListNode pHead) {<br>        if(pHead == null) {<br>            return null;<br>        }</p>
+<pre><code>    RandomListNode currentNode = pHead;
+    //1、复制每个结点，如复制结点A得到A1，将结点A1插到结点A后面；
+    while(currentNode != null){
+        RandomListNode cloneNode = new RandomListNode(currentNode.label);
+        RandomListNode nextNode = currentNode.next;
+        currentNode.next = cloneNode;
+        cloneNode.next = nextNode;
+        currentNode = nextNode;
+    }
+
+    currentNode = pHead;
+    //2、重新遍历链表，复制老结点的随机指针给新结点，如A1.random = A.random.next;
+    while(currentNode != null) {
+        currentNode.next.random = currentNode.random==null?null:currentNode.random.next;
+        currentNode = currentNode.next.next;
+    }
+
+    //3、拆分链表，将链表拆分为原链表和复制后的链表
+    currentNode = pHead;
+    RandomListNode pCloneHead = pHead.next;
+    while(currentNode != null) {
+        RandomListNode cloneNode = currentNode.next;
+        currentNode.next = cloneNode.next;
+        cloneNode.next = cloneNode.next==null?null:cloneNode.next.next;
+        currentNode = currentNode.next;
+    }
+
+    return pCloneHead;
+}
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"># 10.反转链表</span><br><span class="line"></span><br><span class="line">## 问题描述</span><br><span class="line"></span><br><span class="line">题目：定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。如图：</span><br><span class="line">!&#123;% asset_img 13.png %&#125;</span><br><span class="line"></span><br><span class="line">## 算法思路</span><br><span class="line"></span><br><span class="line">为了正确地反转一个链表，需要调整链表中指针的方向。为了将复杂的过程说清楚，这里借助于下面的这张图片。</span><br><span class="line">&#123;% asset_img 14.png %&#125;</span><br><span class="line">上面的图中所示的链表中，h、i和j是3个相邻的结点。假设经过若干操作，我们已经把h结点之前的指针调整完毕，这个结点的**m_pNext**都指向前面的一个结点。接下来我们把i的**m_pNext**指向h，此时结构如上图所示。</span><br><span class="line"></span><br><span class="line">从上图注意到，由于结点i的**m_pNext**都指向了它的前一个结点，导致我们无法在链表中遍历到结点j。为了避免链表在i处断裂，我们需要在调整结点i的**m_pNext**之前，把结点j保存下来。</span><br><span class="line"></span><br><span class="line">即在调整结点i的**m_pNext**指针时，除了需要知道结点i本身之外，还需要i的前一个结点h，因为我们需要把结点i的**m_pNext**指向结点h。同时，还需要实现保存i的一个结点j，以防止链表断开。故我们需要定义3个指针，分别指向当前遍历到的结点、它的前一个结点及后一个结点。故反转结束后，新链表的头的结点就是原来链表的尾部结点。尾部结点为**m_pNext**为null的结点。</span><br><span class="line"></span><br><span class="line">## 代码如下</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public class ReverseList_16 &#123;</span><br><span class="line"></span><br><span class="line">    public ListNode ReverseList(ListNode head) &#123;</span><br><span class="line">        if (head == null || head.nextNode == null) &#123;</span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode next = head.nextNode;</span><br><span class="line">        head.nextNode = null;</span><br><span class="line">        ListNode newHead = ReverseList(next);</span><br><span class="line">        next.nextNode = head;</span><br><span class="line">        return newHead;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ListNode ReverseList1(ListNode head) &#123;</span><br><span class="line">        ListNode newList = new ListNode(-1);</span><br><span class="line">        while (head != null) &#123;</span><br><span class="line">            ListNode next = head.nextNode;</span><br><span class="line">            head.nextNode = newList.nextNode;</span><br><span class="line">            newList.nextNode = head;</span><br><span class="line">            head = next;</span><br><span class="line">        &#125;</span><br><span class="line">        return newList.nextNode;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>参考：</p>
+<p><a href="https://blog.csdn.net/u010983881/article/details/78896293" target="_blank" rel="noopener">https://blog.csdn.net/u010983881/article/details/78896293</a></p>
+<p><a href="https://blog.csdn.net/inspiredbh/article/details/54915091" target="_blank" rel="noopener">https://blog.csdn.net/inspiredbh/article/details/54915091</a></p>
+<p><a href="https://www.jianshu.com/p/092d14d13216" target="_blank" rel="noopener">https://www.jianshu.com/p/092d14d13216</a></p>
+<p><a href="https://www.cnblogs.com/bakari/p/4013812.html" target="_blank" rel="noopener">https://www.cnblogs.com/bakari/p/4013812.html</a></p>
+<p><a href="http://www.cnblogs.com/edisonchou/p/4790090.html" target="_blank" rel="noopener">http://www.cnblogs.com/edisonchou/p/4790090.html</a></p>
+<p><a href="https://blog.csdn.net/u013132035/article/details/80589657" target="_blank" rel="noopener">https://blog.csdn.net/u013132035/article/details/80589657</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构与算法之美/" rel="tag"># 数据结构与算法之美</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/02/二分查找法/" rel="next" title="二分查找法">
+                <i class="fa fa-chevron-left"></i> 二分查找法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/02/循序渐进学习栈和队列/" rel="prev" title="循序渐进学习栈和队列">
+                循序渐进学习栈和队列 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">tao jian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-链表的倒数第K个结点"><span class="nav-number">2.</span> <span class="nav-text">1.链表的倒数第K个结点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述："><span class="nav-number">2.1.</span> <span class="nav-text">问题描述：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路："><span class="nav-number">2.2.</span> <span class="nav-text">算法思路：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下："><span class="nav-number">2.3.</span> <span class="nav-text">代码如下：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-如何判断一个链表有环"><span class="nav-number">3.</span> <span class="nav-text">3.如何判断一个链表有环</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述：-1"><span class="nav-number">3.1.</span> <span class="nav-text">问题描述：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路：-1"><span class="nav-number">3.2.</span> <span class="nav-text">算法思路：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一、穷举遍历"><span class="nav-number">3.2.1.</span> <span class="nav-text">方法一、穷举遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二、快慢指针"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法二、快慢指针</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-链表中环的大小"><span class="nav-number">4.</span> <span class="nav-text">4.链表中环的大小</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">4.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路"><span class="nav-number">4.2.</span> <span class="nav-text">算法思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下"><span class="nav-number">4.3.</span> <span class="nav-text">代码如下</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-链表中环的入口结点"><span class="nav-number">5.</span> <span class="nav-text">5.链表中环的入口结点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-1"><span class="nav-number">5.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路-1"><span class="nav-number">5.2.</span> <span class="nav-text">算法思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下-1"><span class="nav-number">5.3.</span> <span class="nav-text">代码如下</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-单链表在时间复杂度为O-1-删除链表结点"><span class="nav-number">6.</span> <span class="nav-text">6.单链表在时间复杂度为O(1)删除链表结点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-2"><span class="nav-number">6.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路-2"><span class="nav-number">6.2.</span> <span class="nav-text">算法思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下-2"><span class="nav-number">6.3.</span> <span class="nav-text">代码如下</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-合并两个排序的链表"><span class="nav-number">7.</span> <span class="nav-text">8.合并两个排序的链表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-3"><span class="nav-number">7.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路-3"><span class="nav-number">7.2.</span> <span class="nav-text">算法思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下-3"><span class="nav-number">7.3.</span> <span class="nav-text">代码如下</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-复杂的链表复制"><span class="nav-number">8.</span> <span class="nav-text">9.复杂的链表复制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-4"><span class="nav-number">8.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法思路-4"><span class="nav-number">8.2.</span> <span class="nav-text">算法思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一种：O-n2-的普通解法"><span class="nav-number">8.2.1.</span> <span class="nav-text">第一种：O(n2)的普通解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二种-：借助辅助空间的O-n-解法"><span class="nav-number">8.2.2.</span> <span class="nav-text">第二种 ：借助辅助空间的O(n)解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三种：不借助辅助空间的O-n-解法"><span class="nav-number">8.2.3.</span> <span class="nav-text">第三种：不借助辅助空间的O(n)解法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码如下-4"><span class="nav-number">8.3.</span> <span class="nav-text">代码如下</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tao jian</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

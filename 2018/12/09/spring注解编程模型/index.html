@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="注解," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接： https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations">
+<meta name="keywords" content="注解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】spring注解编程模型">
+<meta property="og:url" content="https://www.taobigbig.cn/2018/12/09/spring注解编程模型/index.html">
+<meta property="og:site_name" content="tao jian">
+<meta property="og:description" content="原文链接： https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-09T05:48:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】spring注解编程模型">
+<meta name="twitter:description" content="原文链接： https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.taobigbig.cn/2018/12/09/spring注解编程模型/"/>
+
+
+
+
+
+  <title>【译】spring注解编程模型 | tao jian</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tao jian</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学习积累</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.taobigbig.cn/2018/12/09/spring注解编程模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tao jian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tao jian">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【译】spring注解编程模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-09T13:31:29+08:00">
+                2018-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>原文链接： <a href="https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations" target="_blank" rel="noopener">https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations</a></p>
+</blockquote>
+<a id="more"></a>
+<blockquote>
+<p>原文链接： <a href="https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations" target="_blank" rel="noopener">https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations</a></p>
+</blockquote>
+<p>本文内容</p>
+<ol>
+<li>概观</li>
+<li>术语</li>
+<li>例子</li>
+<li>常问问题</li>
+</ol>
+<h2 id="一、概观"><a href="#一、概观" class="headerlink" title="一、概观"></a>一、概观</h2><p>多年来，Spring Framework不断发展对注解的支持，比如元注解和组合注解的支持。本文档旨在帮助开发人员（Spring的最终用户，Spring Framework和Spring组合项目的开发人员）开发和使用Spring注解。</p>
+<h2 id="二、本文档的目标"><a href="#二、本文档的目标" class="headerlink" title="二、本文档的目标"></a>二、本文档的目标</h2><p>本文档的主要目标包括以下内容的解释：</p>
+<ul>
+<li>如何使用Spring注释。</li>
+<li>如何开发用于Spring的注释。</li>
+<li>Spring如何找到注释（即Spring的注释搜索算法如何工作）。</li>
+</ul>
+<h2 id="三、本文档的非目标"><a href="#三、本文档的非目标" class="headerlink" title="三、本文档的非目标"></a>三、本文档的非目标</h2><p>本文档的目的不是说明Spring Framework中特定注释的语义或配置选项。需要查看相关关特定注释的详细信息，建议开发人员查阅相应的Javadoc或参考官网文档的相应部分。</p>
+<h2 id="四、术语"><a href="#四、术语" class="headerlink" title="四、术语"></a>四、术语</h2><h3 id="1-元注解"><a href="#1-元注解" class="headerlink" title="1.元注解"></a>1.元注解</h3><p>元注释是java基础注解来声明注解。因此，一个注解必然是被元注解而注解的。例如，任何注解被声明都是 @Documented从java.lang.annotation包中进行元注释的。</p>
+<h3 id="2-模式注解"><a href="#2-模式注解" class="headerlink" title="2.模式注解"></a>2.模式注解</h3><p>模式注解是被用于声明在应用程序中个一个组件的角色。例如，@Repository 注解在Spring Framework中是任何满足存储库角色或构造型（也称为数据访问对象或DAO）的类的标记。</p>
+<p>@Component是任何Spring管理组件的通用模式注解。任何被 @Component 标准的组件均为组件扫描的候选对象。类 似地，凡是被 @Component 元标注(meta-annotated)的注解，如 @Service，当任何组件标注它时，也被视作组件扫 描的候选对象。</p>
+<p>核心Spring提供了一些模式注解开箱即用，包括但不限于：@Component，@Service，@Repository， @Controller，@RestController，和@Configuration。@Repository， @Service等等都是@Component的扩展化。</p>
+<h3 id="3-组合注释"><a href="#3-组合注释" class="headerlink" title="3.组合注释"></a>3.组合注释</h3><p>组合注解是元注解与相结合的那些元注释相关联成一个单一的自定义注解的行为的意图的一个或多个注解。例如，一个名为@TransactionalService使用Spring里面的 @Transactional和@Service注释进行注解的注解是一个组合注释，它结合了@Transactional和@Service的语义。 @TransactionalService是在技​​术上自定义的一个模式注解。</p>
+<h3 id="4-注释存在"><a href="#4-注释存在" class="headerlink" title="4.注释存在"></a>4.注释存在</h3><p>一个注解无论是直接标注还是间接标注一个bean，这个注解在java8的java.lang.reflect.AnnotatedElement类注释中所约定的含义和特性都不会有任何改变。<br>在Spring框架里面，注释被认为是元存在，如果注释被声明为一些其他的注释的元注释这是一个元件上存在的元件上。例如，鉴于上述 @TransactionalService，我们可以说，@Transactional是元存在 于直接与注释的任何类@TransactionalService。</p>
+<h3 id="5-属性别名和覆盖"><a href="#5-属性别名和覆盖" class="headerlink" title="5.属性别名和覆盖"></a>5.属性别名和覆盖</h3><p>一个属性别名是从一个注释属性到另一个注释属性的别名。一组别名中的属性可以互换使用，并视为等效。属性别名可以分类如下。</p>
+<p><strong>显式别名</strong>：如果一个注释中的两个属性被声明为彼此的别名@AliasFor，则它们是显式别名。<br><strong>隐式别名</strong>：如果一个注释中的两个或多个属性被声明为元注释中相同属性的显式覆盖@AliasFor，则它们是隐式别名。<br><strong>传递隐式别名</strong>：在一个注释中给出两个或多个属性，这些属性被声明为元注释中属性的显式覆盖@AliasFor，如果属性有效地覆盖了遵循传递定律的元注释中的相同属性 ，则它们是传递隐式别名。</p>
+<p>一个属性重写是一个重写（或阴影）在元注释的注释属性。属性覆盖可以分类如下。</p>
+<p><strong>隐式覆盖</strong>：给定的属性A中的注解@One和属性A的标注@Two，如果@One是元注解为@Two，然后在属性A中的注释@One是一个隐含的倍率为属性A的标注@Two只在命名约定为主（即，两个属性被命名A）。</p>
+<p><strong>显示覆盖</strong>：如果属性A被声明为属性的别名B在通过元注释@AliasFor，则A是一个明确的覆盖了B。</p>
+<p><strong>传递明确覆盖</strong>：如果注解@One中的成员A明确覆盖了注解@Two中的成员B，而且成员B实际覆盖了注解@Three中的成员C，那么因为覆盖的传递性，所以成员A实际覆盖了成员C。</p>
+<h2 id="五-例子"><a href="#五-例子" class="headerlink" title="五.例子"></a>五.例子</h2><p>Spring Framework和Spring portfolio （<a href="https://github.com/sbrannen/spring-polyglot）" target="_blank" rel="noopener">https://github.com/sbrannen/spring-polyglot）</a> 项目中的许多注释都使用@AliasFor注释来声明属性别名和属性覆盖。常见的例子包括@RequestMapping， @GetMapping和@PostMapping从Spring MVC的以及注释，比如@SpringBootApplication和@SpringBootTest从Springboot启动。</p>
+<p>以下部分提供了演示这些功能的代码段。</p>
+<h4 id="1-使用-AliasFor声明属性别名"><a href="#1-使用-AliasFor声明属性别名" class="headerlink" title="1.使用@AliasFor声明属性别名"></a>1.使用@AliasFor声明属性别名</h4><p>Spring Framework 4.2引入了一流的支持，用于声明和查找注释属性的别名。该@AliasFor注释可被用于声明一对混叠属性内的单个注释或从在自定义由注释一个属性声明的别名在元注释的属性。</p>
+<p>例如，@ContextConfiguration从spring-test模块声明如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>  <span class="meta">@interface</span>  ContextConfiguration &#123; <span class="meta">@AliasFor</span>（“ locations ”）</span><br><span class="line">     String [] value（）<span class="keyword">default</span> &#123;&#125;; <span class="meta">@AliasFor</span>（“ value ”）</span><br><span class="line">     String [] locations（）<span class="keyword">default</span> &#123;&#125;; <span class="comment">// ... </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该locations属性被声明为属性的别名value ，反之亦然。因此，以下声明@ContextConfiguration是等效的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ContextConfiguration</span>（“/ test-config.xml ”）</span><br><span class="line"> <span class="keyword">public</span>  <span class="class"><span class="keyword">class</span>  <span class="title">MyTests</span> </span>&#123; / * ... * / &#125;</span><br><span class="line"><span class="meta">@ContextConfiguration</span>（value  =  “/ test-config.xml ”）</span><br><span class="line"> <span class="keyword">public</span>  <span class="class"><span class="keyword">class</span>  <span class="title">MyTests</span> </span>&#123; / * ... * / &#125;</span><br><span class="line"><span class="meta">@ContextConfiguration</span>（locations  =  “/ test-config.xml ”）</span><br><span class="line"> <span class="keyword">public</span>  <span class="class"><span class="keyword">class</span>  <span class="title">MyTests</span> </span>&#123; / * ... * / &#125;</span><br></pre></td></tr></table></figure>
+<p>类似地，从元注释中覆盖属性的组合注释可@AliasFor用于精确控制在注释层次结构中覆盖哪些属性。实际上，甚至可以为value元注释的属性声明别名。</p>
+<p>例如，可以使用自定义属性覆盖开发组合注释，如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ContextConfiguration</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyTestConfig &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AliasFor</span>(annotation = ContextConfiguration.class, attribute = <span class="string">"value"</span>)</span><br><span class="line">    String[] xmlFiles();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line">```        </span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&gt; 上面的示例演示了开发人员如何实现自己的自定义组合注释 ; 然而，以下表明Spring本身在许多核心Spring注释中使用了这个特性。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(method = RequestMethod.GET)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> GetMapping &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Alias for &#123;<span class="doctag">@link</span> RequestMapping#name&#125;.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = RequestMapping.class)</span><br><span class="line">	<span class="function">String <span class="title">name</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Alias for &#123;<span class="doctag">@link</span> RequestMapping#value&#125;.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = RequestMapping.class)</span><br><span class="line">	String[] value() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Alias for &#123;<span class="doctag">@link</span> RequestMapping#path&#125;.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = RequestMapping.class)</span><br><span class="line">	String[] path() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-Spring-Composed和Spring-Polyglot"><a href="#2-Spring-Composed和Spring-Polyglot" class="headerlink" title="2.Spring Composed和Spring Polyglot"></a>2.Spring Composed和Spring Polyglot</h3><p>Spring Composed项目是可以在在spring4.2.1和更高版本中使用的一系列组合注解。你可以在Spring MVC使用像@Get,@Post,@Put, 和@Delet这样的注解，也可以在Spring MVC REST应用中使用@GetJson,@PostJson等等注解。</p>
+<p>如果你确信已经学习了足够深入的spring-composed例子，汲取了足够多的灵感，然后你可以为spring-Composed项目贡献出由你自定义的组合注解！</p>
+<p><a href="https://github.com/sbrannen/spring-composed" target="_blank" rel="noopener">https://github.com/sbrannen/spring-composed</a><br><a href="https://github.com/sbrannen/spring-polyglot" target="_blank" rel="noopener">https://github.com/sbrannen/spring-polyglot</a></p>
+<h2 id="六、FAQ"><a href="#六、FAQ" class="headerlink" title="六、FAQ"></a>六、FAQ</h2><p>1）可以@AliasFor与value属性一起使用@Component和@Qualifier？<br>最简洁的答案是：不可以。</p>
+<p>将value在属性@Qualifier和模式注解（例如@Component，@Repository，@Controller，和任何自定义典型化注解）不能受其影响@AliasFor。原因是这些value属性的特殊处理是在@AliasFor发明之前的几年。因此，由于向后兼容性问题，根本不可能使用@AliasFor这些value属性。</p>
+<h2 id="七、待发掘主题"><a href="#七、待发掘主题" class="headerlink" title="七、待发掘主题"></a>七、待发掘主题</h2><ul>
+<li>记述 注解和标注了注解和元注解的类、接口、成员方法、成员变量、参数的通用搜索算法。<ol>
+<li>如果一个注解既是以注解又是以元注解的方式标注了一个元素会发生什么呢？</li>
+<li>一个注解标注了@Inherited（包括自定义组合注解）后，是如何对搜索算法产生影响呢？</li>
+</ol>
+</li>
+<li>记述 通过@AliasFor配置注解成员别名的技术原理。<ol>
+<li>如果一个成员和它的别名都声明在一个注解实例（成员和别名值相同或者不同时）中在技术上会发生什么？</li>
+<li>较有代表性的一种情况是，一个AnnotationConfigurationException将会被抛出。</li>
+</ol>
+</li>
+<li>记述<em>组合注解</em>的技术原理。</li>
+<li>记述 组合注解成员覆盖元注解成员的原理。<ol>
+<li>详细记述 查找成员的算法原理：<ul>
+<li>基于命名约定的间接覆盖（换句话说，组合注解中有明确名字和类型的成员去覆盖元注解的成员）</li>
+<li>使用@AliasFor来直接覆盖</li>
+</ul>
+</li>
+<li>如果一个成员和它的众多别名中的一个在注解继承的某一层级中被重新声明了会发生什么？哪个会生效？</li>
+<li>总之，成员变量声明时的冲突是怎么被解决的？</li>
+</ol>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/注解/" rel="tag"># 注解</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/08/快速排序/" rel="next" title="排序之快速排序">
+                <i class="fa fa-chevron-left"></i> 排序之快速排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/03/springboot整合Mybatis/" rel="prev" title="Springboot整合Mybatis">
+                Springboot整合Mybatis <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">tao jian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、概观"><span class="nav-number">1.</span> <span class="nav-text">一、概观</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、本文档的目标"><span class="nav-number">2.</span> <span class="nav-text">二、本文档的目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、本文档的非目标"><span class="nav-number">3.</span> <span class="nav-text">三、本文档的非目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、术语"><span class="nav-number">4.</span> <span class="nav-text">四、术语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-元注解"><span class="nav-number">4.1.</span> <span class="nav-text">1.元注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-模式注解"><span class="nav-number">4.2.</span> <span class="nav-text">2.模式注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-组合注释"><span class="nav-number">4.3.</span> <span class="nav-text">3.组合注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-注释存在"><span class="nav-number">4.4.</span> <span class="nav-text">4.注释存在</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-属性别名和覆盖"><span class="nav-number">4.5.</span> <span class="nav-text">5.属性别名和覆盖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-例子"><span class="nav-number">5.</span> <span class="nav-text">五.例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用-AliasFor声明属性别名"><span class="nav-number">5.0.1.</span> <span class="nav-text">1.使用@AliasFor声明属性别名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Spring-Composed和Spring-Polyglot"><span class="nav-number">5.1.</span> <span class="nav-text">2.Spring Composed和Spring Polyglot</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、FAQ"><span class="nav-number">6.</span> <span class="nav-text">六、FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、待发掘主题"><span class="nav-number">7.</span> <span class="nav-text">七、待发掘主题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tao jian</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

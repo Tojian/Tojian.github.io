@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="zookeeper集群模式的搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zookeeper_0_搭建集群模式以及遇到的问题">
+<meta property="og:url" content="https://www.taobigbig.cn/2018/12/02/zookeeper-0-搭建集群模式以及遇到的问题/index.html">
+<meta property="og:site_name" content="tao jian">
+<meta property="og:description" content="zookeeper集群模式的搭建">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-03T03:27:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="zookeeper_0_搭建集群模式以及遇到的问题">
+<meta name="twitter:description" content="zookeeper集群模式的搭建">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.taobigbig.cn/2018/12/02/zookeeper-0-搭建集群模式以及遇到的问题/"/>
+
+
+
+
+
+  <title>zookeeper_0_搭建集群模式以及遇到的问题 | tao jian</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tao jian</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学习积累</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.taobigbig.cn/2018/12/02/zookeeper-0-搭建集群模式以及遇到的问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tao jian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tao jian">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">zookeeper_0_搭建集群模式以及遇到的问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-02T22:29:51+08:00">
+                2018-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/zookeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">zookeeper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote><p>zookeeper集群模式的搭建</p>
+</blockquote>
+<a id="more"></a> 
+<h1 id="搭建步骤"><a href="#搭建步骤" class="headerlink" title="搭建步骤"></a>搭建步骤</h1><h2 id="一-安装jdk-我准备的是1-8版本"><a href="#一-安装jdk-我准备的是1-8版本" class="headerlink" title="一. 安装jdk(我准备的是1.8版本)"></a>一. 安装jdk(我准备的是1.8版本)</h2><h2 id="二-搭建zookeeper集群模式"><a href="#二-搭建zookeeper集群模式" class="headerlink" title="二.搭建zookeeper集群模式"></a>二.搭建zookeeper集群模式</h2><h3 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1.环境准备"></a>1.环境准备</h3><blockquote>
+<p>本地虚拟机准备三台虚拟机准备搭建</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">192.168.70.130  node1</span><br><span class="line"></span><br><span class="line">192.168.70.131 node2</span><br><span class="line"></span><br><span class="line">192.168.70.132 node3</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在官网上下载zookeeper 的包并拷贝到三个节点上</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp zookeeper-3.5.0-alpha.tar.gz root@192.168.70.132:/home/taojian/software/zookeeper</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 更改文件，由于zookeeper会用到zoo.cfg,所以需要找到位置并修改</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">路径/home/taojian/software/zookeeper/zookeeper-3.5.0-alpha/conf 下面的</span><br><span class="line">zoo_sample.cfg 文件需要改名</span><br><span class="line">命令： mv zoo_sample.cfg zoo.cfg</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>更改zoo.cfg文件内容</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">initLimit=5</span><br><span class="line">syncLimit=2</span><br><span class="line">clientPort=2181</span><br><span class="line">tickTime=2000</span><br><span class="line">dataDir=/home/taojian/software/zookeeper/data</span><br><span class="line">dataLogDir=/home/taojian/software/zookeeper/datalog</span><br><span class="line">server.1=192.168.70.130:2888:3888</span><br><span class="line">server.2=192.168.70.131:2888:3888</span><br><span class="line">server.3=192.168.70.132:2888:3888</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<blockquote>
+<p>dataDir 和dataLogDir 里面的路径文件一定需要存在,同时需要在dataDir路径下面创建文件myid，表明当前的id。假如 192.168.70.130 这个节点，在zoo.cfg 的配置文件上是server.1在里面配置1就可以了</p>
+</blockquote>
+<blockquote>
+<p>zoo.cfg 这个文件是三台机器上面都需要存在的，统一文件即可</p>
+</blockquote>
+<h3 id="验证服务"><a href="#验证服务" class="headerlink" title="验证服务"></a>验证服务</h3><p>在不同的节点上面启动zookeeper服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sh zkServer.sh start</span><br><span class="line">sh zkServer.sh status</span><br><span class="line">sh zkServer.sh stop</span><br></pre></td></tr></table></figure></p>
+<p>查看状态后出现了每一个zookeeper的身份说明运行成功</p>
+<h1 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h1><h3 id="1-在启动zookeeper服务的时候出现-UnkownHostException-：未知的服务-这种情况的时候，可以查看你的防火墙的问题"><a href="#1-在启动zookeeper服务的时候出现-UnkownHostException-：未知的服务-这种情况的时候，可以查看你的防火墙的问题" class="headerlink" title="1.在启动zookeeper服务的时候出现 UnkownHostException ：未知的服务 这种情况的时候，可以查看你的防火墙的问题"></a>1.在启动zookeeper服务的时候出现 UnkownHostException ：未知的服务 这种情况的时候，可以查看你的防火墙的问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state # 查看防火墙是否running</span><br><span class="line">systemctl stop firewalld.service  # 关闭防火墙</span><br><span class="line">systemctl disable firewalld.service # 开机防止启动防火墙</span><br><span class="line">firewall-cmd --state</span><br></pre></td></tr></table></figure>
+<h3 id="2-集群搭建完成后发现ip变动，vmfusion上面固定IP"><a href="#2-集群搭建完成后发现ip变动，vmfusion上面固定IP" class="headerlink" title="2.集群搭建完成后发现ip变动，vmfusion上面固定IP"></a>2.集群搭建完成后发现ip变动，vmfusion上面固定IP</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1.在你本地终端查看</span><br><span class="line"> sudo vim /Library/Preferences/VMware\ Fusion/vmnet8/dhcpd.conf\n</span><br><span class="line">2.修改</span><br><span class="line">subnet 192.168.70.0 netmask 255.255.255.0 &#123;</span><br><span class="line"># range是ip范围</span><br><span class="line"></span><br><span class="line">        range 192.168.70.128 192.168.70.254;</span><br><span class="line">        option broadcast-address 192.168.70.255;</span><br><span class="line">        option domain-name-servers 192.168.70.2;</span><br><span class="line">        option domain-name localdomain;</span><br><span class="line">        default-lease-time 1800;</span><br><span class="line"></span><br><span class="line">host CentOS7_node1 &#123;</span><br><span class="line"># CentOS7_node1 你的虚拟机名字</span><br><span class="line">        hardware ethernet 00:50:56:27:40:E2;  </span><br><span class="line"># 你的虚拟机节点的mac地址</span><br><span class="line">        fixed-address 192.168.70.130;</span><br><span class="line">#固定ip ，当然这个固定ip需要在上面的ip范围内</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-java如何连接zookeeper（原生的zookeeper的API-zkClient和Curator）"><a href="#3-java如何连接zookeeper（原生的zookeeper的API-zkClient和Curator）" class="headerlink" title="3.java如何连接zookeeper（原生的zookeeper的API,zkClient和Curator）"></a>3.java如何连接zookeeper（原生的zookeeper的API,zkClient和Curator）</h3><p>演示：原生的zookeeper</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZookeeperBase</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/** zookeeper地址 */</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String CONNECT_ADDR = <span class="string">"192.168.70.130:2181,192.168.70.131:2181,192.168.70.132:2181"</span>;</span><br><span class="line">	<span class="comment">/** session超时时间 */</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SESSION_OUTTIME = <span class="number">2000</span>;<span class="comment">//ms </span></span><br><span class="line">	<span class="comment">/** 信号量，阻塞程序执行，用于等待zookeeper连接成功，发送成功信号 */</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> CountDownLatch connectedSemaphore = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		</span><br><span class="line">		ZooKeeper zk = <span class="keyword">new</span> ZooKeeper(CONNECT_ADDR, SESSION_OUTTIME, <span class="keyword">new</span> Watcher()&#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent event)</span> </span>&#123;</span><br><span class="line">				<span class="comment">//获取事件的状态</span></span><br><span class="line">				KeeperState keeperState = event.getState();</span><br><span class="line">				EventType eventType = event.getType();</span><br><span class="line">				<span class="comment">//如果是建立连接</span></span><br><span class="line">				<span class="keyword">if</span>(KeeperState.SyncConnected == keeperState)&#123;</span><br><span class="line">					<span class="keyword">if</span>(EventType.None == eventType)&#123;</span><br><span class="line">						<span class="comment">//如果建立连接成功，则发送信号量，让后续阻塞程序向下执行</span></span><br><span class="line">						connectedSemaphore.countDown();</span><br><span class="line">						System.out.println(<span class="string">"zk 建立连接"</span>);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//进行阻塞</span></span><br><span class="line">		connectedSemaphore.await();</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/02/浅谈Code-Review/" rel="next" title="浅谈Code Review ">
+                <i class="fa fa-chevron-left"></i> 浅谈Code Review 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/02/lombok-简化-Java-代码/" rel="prev" title="lombok 简化 Java 代码">
+                lombok 简化 Java 代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">tao jian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建步骤"><span class="nav-number">1.</span> <span class="nav-text">搭建步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-安装jdk-我准备的是1-8版本"><span class="nav-number">1.1.</span> <span class="nav-text">一. 安装jdk(我准备的是1.8版本)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-搭建zookeeper集群模式"><span class="nav-number">1.2.</span> <span class="nav-text">二.搭建zookeeper集群模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-环境准备"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证服务"><span class="nav-number">1.2.2.</span> <span class="nav-text">验证服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题总结"><span class="nav-number">2.</span> <span class="nav-text">问题总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-在启动zookeeper服务的时候出现-UnkownHostException-：未知的服务-这种情况的时候，可以查看你的防火墙的问题"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.在启动zookeeper服务的时候出现 UnkownHostException ：未知的服务 这种情况的时候，可以查看你的防火墙的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-集群搭建完成后发现ip变动，vmfusion上面固定IP"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.集群搭建完成后发现ip变动，vmfusion上面固定IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-java如何连接zookeeper（原生的zookeeper的API-zkClient和Curator）"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.java如何连接zookeeper（原生的zookeeper的API,zkClient和Curator）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tao jian</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
