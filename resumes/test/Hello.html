@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>css实现导航切换</title>
+  <style type="text/css">
+    .clothes {
+      width: 1170px;
+      margin: 0 auto;
+      border-bottom: 1px solid red;
+      margin: 30px;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      list-style: none;
+      height: 35px;
+      line-height: 35px;
+      width: 64px;
+      text-align: center;
+    }
+
+    a {
+      text-decoration: none;
+      color: #000;
+      text-align: center;
+      font-size: 12px;
+      font-family: "微软雅黑";
+      margin-bottom: -1px;
+    }
+
+    .clearfix:after {
+      content: "/200b";
+      height: 0;
+      display: block;
+      visibility: hidden;
+      clear: both;
+    }
+
+    ul li {
+      float: left;
+      border-top: 1px solid #ededed;
+    }
+
+    a {
+      border-left: 1px solid #fff;
+      width: 64px;
+      text-align: center;
+      display: inline-block;
+      height: 33px;
+      line-height: 33px;
+      margin-bottom: 1px;
+    }
+
+    a:hover {
+      background: #fff;
+      border-top: 2px solid red;
+      border-left: 1px solid red !important;
+      border-right: 1px solid red;
+      height: 34px;
+      line-height: 34px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="clothes">
+    <ul class="clearfix">
+      <li style="border-left:1px solid #ededed;"><a style="border-left:1px solid #fff;" href="">大牌</a></li>
+      <li><a href="#contact">男装</a></li>
+      <li><a href="">女装</a></li>
+      <li><a href="">鞋靴</a></li>
+      <li><a href="">箱包</a></li>
+      <li><a href="">内衣配饰</a></li>
+      <li><a href="">珠宝首饰</a></li>
+      <li><a href="">奢侈礼品</a></li>
+      <li style="border-right:1px solid #ededed;"><a href="">奢华腕表</a></li>
+    </ul>
+  </div>
+
+  <div id="contact">
+    hello
+  </div>
+
+</body>
+
+</html>
