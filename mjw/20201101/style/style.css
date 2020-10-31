@@ -95,16 +95,19 @@ body {
   position: absolute;
   left: 0;
   right: 0;
+  
 }
 
 .idea-3 strong {
   padding: 3px 5px;
   border-radius: 3px;
   display: inline-block;
+  background-color: pink;
 }
 
 .five .idea-5 {
   font-size: 4rem;
+  background-color: pink;
 }
 
 .idea-5 span,
